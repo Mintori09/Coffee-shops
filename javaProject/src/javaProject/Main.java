@@ -34,7 +34,8 @@ public class Main {
             JButton btnDatMon = new JButton("Đặt món");
             btnDatMon.setFont(new Font("Arial", Font.BOLD, 20));
             btnDatMon.addActionListener(e -> {
-                new DatMonForm().setVisible(true);
+                mainFrame.setVisible(false); // Ẩn chính JFrame hiện tại
+                new DatMonForm().setVisible(true); // Mở form mới
             });
 
             // Nút quản lý nhân viên

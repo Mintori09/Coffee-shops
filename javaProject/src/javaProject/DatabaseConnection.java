@@ -10,9 +10,8 @@ import java.util.List;
 
 public class DatabaseConnection {
     public static Connection getConnection() {
-    	String connectionUrl = "jdbc:sqlserver://DESKTOP-SVSMN8V:1433;databaseName=coffeeManagement;integratedSecurity=true;encrypt=true;trustServerCertificate=true;";
+        String connectionUrl = "";
         try {
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             Connection conn = DriverManager.getConnection(connectionUrl);
             System.out.println("Kết nối thành công!");
             return conn;
@@ -42,11 +41,11 @@ public class DatabaseConnection {
     // Base class for database operations
     public static class BaseDAO {
         protected Connection conn;
-        
+
         public BaseDAO() {
             this.conn = getConnection();
         }
-        
+
         protected void closeConnection() {
             if (conn != null) {
                 try {
@@ -56,11 +55,13 @@ public class DatabaseConnection {
                 }
             }
         }
-        
+
         protected void closeResources(PreparedStatement ps, ResultSet rs) {
             try {
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
+                if (rs != null)
+                    rs.close();
+                if (ps != null)
+                    ps.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }

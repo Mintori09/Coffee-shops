@@ -23,7 +23,8 @@ public class ChiTietHoaDon extends BaseDAO {
         super();
     }
 
-    public ChiTietHoaDon(int maChiTietHD, int maHoaDon, int maMon, int soLuong, double donGiaLucDat, double thanhTien, String ghiChuMon) {
+    public ChiTietHoaDon(int maChiTietHD, int maHoaDon, int maMon, int soLuong, double donGiaLucDat, double thanhTien,
+            String ghiChuMon) {
         this.maChiTietHD = maChiTietHD;
         this.maHoaDon = maHoaDon;
         this.maMon = maMon;
@@ -34,31 +35,90 @@ public class ChiTietHoaDon extends BaseDAO {
     }
 
     // Getters and Setters
-    public int getMaChiTietHD() { return maChiTietHD; }
-    public void setMaChiTietHD(int maChiTietHD) { this.maChiTietHD = maChiTietHD; }
-    public int getMaHoaDon() { return maHoaDon; }
-    public void setMaHoaDon(int maHoaDon) { this.maHoaDon = maHoaDon; }
-    public int getMaMon() { return maMon; }
-    public void setMaMon(int maMon) { this.maMon = maMon; }
-    public String getTenMon() { return tenMon; }
-    public void setTenMon(String tenMon) { this.tenMon = tenMon; }
-    public int getSoLuong() { return soLuong; }
-    public void setSoLuong(int soLuong) { this.soLuong = soLuong; }
-    public double getDonGiaLucDat() { return donGiaLucDat; }
-    public void setDonGiaLucDat(double donGiaLucDat) { this.donGiaLucDat = donGiaLucDat; }
-    public double getThanhTien() { return thanhTien; }
-    public void setThanhTien(double thanhTien) { this.thanhTien = thanhTien; }
-    public String getGhiChuMon() { return ghiChuMon; }
-    public void setGhiChuMon(String ghiChuMon) { this.ghiChuMon = ghiChuMon; }
-    public String getThoiGianTao() { return thoiGianTao; }
-    public void setThoiGianTao(String thoiGianTao) { this.thoiGianTao = thoiGianTao; }
-    public String getThoiGianCapNhat() { return thoiGianCapNhat; }
-    public void setThoiGianCapNhat(String thoiGianCapNhat) { this.thoiGianCapNhat = thoiGianCapNhat; }
+    public int getMaChiTietHD() {
+        return maChiTietHD;
+    }
+
+    public void setMaChiTietHD(int maChiTietHD) {
+        this.maChiTietHD = maChiTietHD;
+    }
+
+    public int getMaHoaDon() {
+        return maHoaDon;
+    }
+
+    public void setMaHoaDon(int maHoaDon) {
+        this.maHoaDon = maHoaDon;
+    }
+
+    public int getMaMon() {
+        return maMon;
+    }
+
+    public void setMaMon(int maMon) {
+        this.maMon = maMon;
+    }
+
+    public String getTenMon() {
+        return tenMon;
+    }
+
+    public void setTenMon(String tenMon) {
+        this.tenMon = tenMon;
+    }
+
+    public int getSoLuong() {
+        return soLuong;
+    }
+
+    public void setSoLuong(int soLuong) {
+        this.soLuong = soLuong;
+    }
+
+    public double getDonGiaLucDat() {
+        return donGiaLucDat;
+    }
+
+    public void setDonGiaLucDat(double donGiaLucDat) {
+        this.donGiaLucDat = donGiaLucDat;
+    }
+
+    public double getThanhTien() {
+        return thanhTien;
+    }
+
+    public void setThanhTien(double thanhTien) {
+        this.thanhTien = thanhTien;
+    }
+
+    public String getGhiChuMon() {
+        return ghiChuMon;
+    }
+
+    public void setGhiChuMon(String ghiChuMon) {
+        this.ghiChuMon = ghiChuMon;
+    }
+
+    public String getThoiGianTao() {
+        return thoiGianTao;
+    }
+
+    public void setThoiGianTao(String thoiGianTao) {
+        this.thoiGianTao = thoiGianTao;
+    }
+
+    public String getThoiGianCapNhat() {
+        return thoiGianCapNhat;
+    }
+
+    public void setThoiGianCapNhat(String thoiGianCapNhat) {
+        this.thoiGianCapNhat = thoiGianCapNhat;
+    }
 
     // CRUD Operations
     public boolean themChiTietHoaDon() {
         String sql = "INSERT INTO ChiTietHoaDon (MaChiTietHD, MaHoaDon, MaMon, SoLuong, DonGiaLucDat, " +
-                    "ThanhTien, GhiChuMon) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                "ThanhTien, GhiChuMon) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, maChiTietHD);
             ps.setInt(2, maHoaDon);
@@ -76,7 +136,7 @@ public class ChiTietHoaDon extends BaseDAO {
 
     public boolean capNhatChiTietHoaDon() {
         String sql = "UPDATE ChiTietHoaDon SET SoLuong = ?, DonGiaLucDat = ?, ThanhTien = ?, " +
-                    "GhiChuMon = ?, ThoiGianCapNhat = GETDATE() WHERE MaChiTietHD = ?";
+                "GhiChuMon = ?, ThoiGianCapNhat = GETDATE() WHERE MaChiTietHD = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, soLuong);
             ps.setDouble(2, donGiaLucDat);
@@ -156,7 +216,7 @@ public class ChiTietHoaDon extends BaseDAO {
         List<ChiTietHoaDon> danhSach = new ArrayList<>();
         String sql = "SELECT c.*, t.TenMon FROM ChiTietHoaDon c JOIN ThucDon t ON c.MaMon = t.MaMon";
         try (PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+                ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 ChiTietHoaDon chiTiet = new ChiTietHoaDon();
                 chiTiet.setMaChiTietHD(rs.getInt("MaChiTietHD"));
@@ -176,4 +236,4 @@ public class ChiTietHoaDon extends BaseDAO {
         }
         return danhSach;
     }
-} 
+}

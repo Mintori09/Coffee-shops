@@ -36,9 +36,11 @@ public class DatBanForm extends JFrame {
         setLayout(new BorderLayout(10, 10));
 
         // Bảng bàn
-        String[] columnNames = {"Mã Bàn", "Tên Bàn", "Số Ghế", "Trạng Thái", "Vị Trí"};
+        String[] columnNames = { "Mã Bàn", "Tên Bàn", "Số Ghế", "Trạng Thái", "Vị Trí" };
         banTableModel = new DefaultTableModel(columnNames, 0) {
-            public boolean isCellEditable(int row, int col) { return false; }
+            public boolean isCellEditable(int row, int col) {
+                return false;
+            }
         };
         banTable = new JTable(banTableModel);
         banTable.setRowHeight(28);
@@ -50,11 +52,11 @@ public class DatBanForm extends JFrame {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         datBanButton = new JButton("Đặt Bàn");
         datBanButton.setFont(new Font("Arial", Font.BOLD, 15));
-        datBanButton.setBackground(new Color(76,175,80));
+        datBanButton.setBackground(new Color(76, 175, 80));
         datBanButton.setForeground(Color.WHITE);
         huyDatBanButton = new JButton("Hủy Đặt Bàn");
         huyDatBanButton.setFont(new Font("Arial", Font.BOLD, 15));
-        huyDatBanButton.setBackground(new Color(244,67,54));
+        huyDatBanButton.setBackground(new Color(244, 67, 54));
         huyDatBanButton.setForeground(Color.WHITE);
         refreshButton = new JButton("Làm Mới");
         refreshButton.setFont(new Font("Arial", Font.BOLD, 15));
@@ -69,7 +71,8 @@ public class DatBanForm extends JFrame {
         gbc.anchor = GridBagConstraints.WEST;
 
         // Nhân viên
-        gbc.gridx = 0; gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
         infoPanel.add(new JLabel("Nhân viên:"), gbc);
         gbc.gridx = 1;
         nhanVienComboBox = new JComboBox<>();
@@ -77,28 +80,32 @@ public class DatBanForm extends JFrame {
         infoPanel.add(nhanVienComboBox, gbc);
 
         // Khách hàng (TextField)
-        gbc.gridx = 0; gbc.gridy = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
         infoPanel.add(new JLabel("Tên khách hàng:"), gbc);
         gbc.gridx = 1;
         tenKhachHangField = new JTextField();
         tenKhachHangField.setPreferredSize(new Dimension(250, 28));
         infoPanel.add(tenKhachHangField, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
         infoPanel.add(new JLabel("Số điện thoại:"), gbc);
         gbc.gridx = 1;
         soDienThoaiField = new JTextField();
         soDienThoaiField.setPreferredSize(new Dimension(250, 28));
         infoPanel.add(soDienThoaiField, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 3;
+        gbc.gridx = 0;
+        gbc.gridy = 3;
         infoPanel.add(new JLabel("Email:"), gbc);
         gbc.gridx = 1;
         emailField = new JTextField();
         emailField.setPreferredSize(new Dimension(250, 28));
         infoPanel.add(emailField, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 4;
+        gbc.gridx = 0;
+        gbc.gridy = 4;
         infoPanel.add(new JLabel("Địa chỉ:"), gbc);
         gbc.gridx = 1;
         diaChiField = new JTextField();
@@ -106,7 +113,8 @@ public class DatBanForm extends JFrame {
         infoPanel.add(diaChiField, gbc);
 
         // Ghi chú
-        gbc.gridx = 0; gbc.gridy = 5;
+        gbc.gridx = 0;
+        gbc.gridy = 5;
         infoPanel.add(new JLabel("Ghi chú:"), gbc);
         gbc.gridx = 1;
         ghiChuArea = new JTextArea(2, 20);
@@ -129,8 +137,8 @@ public class DatBanForm extends JFrame {
         banTableModel.setRowCount(0);
         List<Ban> danhSachBan = datBanService.layDanhSachBanTrong();
         for (Ban ban : danhSachBan) {
-            banTableModel.addRow(new Object[]{
-                ban.getMaBan(), ban.getTenBan(), ban.getSoGhe(), ban.getTrangThai(), ban.getViTri()
+            banTableModel.addRow(new Object[] {
+                    ban.getMaBan(), ban.getTenBan(), ban.getSoGhe(), ban.getTrangThai(), ban.getViTri()
             });
         }
 
@@ -194,4 +202,4 @@ public class DatBanForm extends JFrame {
             new DatBanForm().setVisible(true);
         });
     }
-} 
+}

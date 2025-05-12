@@ -24,16 +24,45 @@ public class LoaiMon extends BaseDAO {
     }
 
     // Getters and Setters
-    public int getMaLoaiMon() { return maLoaiMon; }
-    public void setMaLoaiMon(int maLoaiMon) { this.maLoaiMon = maLoaiMon; }
-    public String getTenLoaiMon() { return tenLoaiMon; }
-    public void setTenLoaiMon(String tenLoaiMon) { this.tenLoaiMon = tenLoaiMon; }
-    public String getMoTa() { return moTa; }
-    public void setMoTa(String moTa) { this.moTa = moTa; }
-    public String getThoiGianTao() { return thoiGianTao; }
-    public void setThoiGianTao(String thoiGianTao) { this.thoiGianTao = thoiGianTao; }
-    public String getThoiGianCapNhat() { return thoiGianCapNhat; }
-    public void setThoiGianCapNhat(String thoiGianCapNhat) { this.thoiGianCapNhat = thoiGianCapNhat; }
+    public int getMaLoaiMon() {
+        return maLoaiMon;
+    }
+
+    public void setMaLoaiMon(int maLoaiMon) {
+        this.maLoaiMon = maLoaiMon;
+    }
+
+    public String getTenLoaiMon() {
+        return tenLoaiMon;
+    }
+
+    public void setTenLoaiMon(String tenLoaiMon) {
+        this.tenLoaiMon = tenLoaiMon;
+    }
+
+    public String getMoTa() {
+        return moTa;
+    }
+
+    public void setMoTa(String moTa) {
+        this.moTa = moTa;
+    }
+
+    public String getThoiGianTao() {
+        return thoiGianTao;
+    }
+
+    public void setThoiGianTao(String thoiGianTao) {
+        this.thoiGianTao = thoiGianTao;
+    }
+
+    public String getThoiGianCapNhat() {
+        return thoiGianCapNhat;
+    }
+
+    public void setThoiGianCapNhat(String thoiGianCapNhat) {
+        this.thoiGianCapNhat = thoiGianCapNhat;
+    }
 
     // CRUD Operations
     public boolean themLoaiMon() {
@@ -117,7 +146,7 @@ public class LoaiMon extends BaseDAO {
         List<LoaiMon> danhSach = new ArrayList<>();
         String sql = "SELECT * FROM LoaiMon";
         try (PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+                ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 LoaiMon loaiMon = new LoaiMon();
                 loaiMon.setMaLoaiMon(rs.getInt("MaLoaiMon"));
@@ -132,4 +161,4 @@ public class LoaiMon extends BaseDAO {
         }
         return danhSach;
     }
-} 
+}
