@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.project.app.database.DatabaseConnection.connection;
+
 public class HoaDonDAO extends BaseDAO {
 
     public List<HoaDon> getAllHoaDon() throws SQLException {

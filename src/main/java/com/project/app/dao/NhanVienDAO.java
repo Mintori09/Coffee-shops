@@ -5,6 +5,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.project.app.database.DatabaseConnection.connection;
+
 public class NhanVienDAO extends BaseDAO {
     
     public List<NhanVien> getAllNhanVien() throws SQLException {

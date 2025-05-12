@@ -5,9 +5,9 @@ import java.time.LocalDateTime;
 public class NhanVien {
     private String maNhanVien;
     private String tenNhanVien;
-    private String chucVu;
     private String soDienThoai;
     private String email;
+    private String chucVu;
     private LocalDateTime thoiGianTao;
     private LocalDateTime thoiGianCapNhat;
 

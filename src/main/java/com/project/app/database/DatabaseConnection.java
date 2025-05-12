@@ -6,13 +6,13 @@ import java.sql.SQLException;
 
 public class DatabaseConnection {
     private static final String URL = "jdbc:mariadb://localhost:3306/CoffeeShop";
-    private static final String USER = "root";
-    private static final String PASSWORD = "";
-    private static Connection connection;
+    private static final String USER = "mintori";
+    private static final String PASSWORD = "123";
+    public static Connection connection;
 
     private DatabaseConnection() {}
 
-    public static Connection getConnection() throws SQLException {
+    public static void getConnection() throws SQLException {
         if (connection == null || connection.isClosed()) {
             try {
                 Class.forName("org.mariadb.jdbc.Driver");
@@ -21,7 +21,6 @@ public class DatabaseConnection {
                 throw new SQLException("MariaDB JDBC Driver not found", e);
             }
         }
-        return connection;
     }
 
     public static void closeConnection() throws SQLException {

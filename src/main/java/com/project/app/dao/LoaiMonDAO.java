@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.project.app.database.DatabaseConnection.connection;
+
 public class LoaiMonDAO extends BaseDAO {
 
     public List<LoaiMon> getAllLoaiMon() throws SQLException {

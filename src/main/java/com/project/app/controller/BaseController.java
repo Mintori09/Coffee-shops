@@ -1,5 +1,5 @@
 package com.project.app.controller;
 
-public class Controller {
+public class BaseController {
     // Controller logic will go here
 }
