@@ -1,5 +1,6 @@
 package javaProject.gui;
 
+import javaProject.DatabaseConnection;
 import javaProject.model.Ban;
 import javaProject.model.HoaDon;
 import javaProject.model.NhanVien;
@@ -8,6 +9,7 @@ import javaProject.service.DatBanService;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.SQLException;
 import java.util.List;
 
 public class DatBanForm extends JFrame {
@@ -22,7 +24,7 @@ public class DatBanForm extends JFrame {
     private JButton datBanButton, huyDatBanButton, refreshButton;
     private DatBanService datBanService;
 
-    public DatBanForm() {
+    public DatBanForm() throws SQLException {
         datBanService = new DatBanService();
         setTitle("Đặt Bàn");
         setSize(900, 600);
@@ -32,7 +34,8 @@ public class DatBanForm extends JFrame {
         loadData();
     }
 
-    private void initComponents() {
+    private void initComponents() throws SQLException {
+        DatabaseConnection.getConnection();
         setLayout(new BorderLayout(10, 10));
 
         // Bảng bàn
@@ -199,7 +202,11 @@ public class DatBanForm extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new DatBanForm().setVisible(true);
+            try {
+                new DatBanForm().setVisible(true);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 }

@@ -9,15 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseConnection {
+
+    private static final String URL = "jdbc:mariadb://localhost:3306/CoffeeShop";
+    private static final String USER = "mintori";
+    private static final String PASSWORD = "123";
+    private DatabaseConnection() {}
     public static Connection getConnection() {
-        String connectionUrl = "";
         try {
-            Connection conn = DriverManager.getConnection(connectionUrl);
+            Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
             System.out.println("Kết nối thành công!");
             return conn;
-        } catch (ClassNotFoundException e) {
-            System.err.println("Không tìm thấy driver JDBC: " + e.getMessage());
-            e.printStackTrace();
         } catch (SQLException e) {
             System.err.println("Lỗi kết nối SQL Server: " + e.getMessage());
             e.printStackTrace();

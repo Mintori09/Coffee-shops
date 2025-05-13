@@ -4,6 +4,7 @@ import javaProject.gui.DatBanForm;
 import javaProject.gui.DatMonForm;
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 import java.util.List;
 
 public class Main {
@@ -27,7 +28,11 @@ public class Main {
             JButton btnDatBan = new JButton("Đặt bàn");
             btnDatBan.setFont(new Font("Arial", Font.BOLD, 20));
             btnDatBan.addActionListener(e -> {
-                new DatBanForm().setVisible(true);
+                try {
+                    new DatBanForm().setVisible(true);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             });
 
             // Nút đặt món
