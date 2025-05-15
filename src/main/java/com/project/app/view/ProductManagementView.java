@@ -166,7 +166,36 @@ public class ProductManagementView extends JPanel {
 
         clearButton.addActionListener(e -> clearForm());
         addButton.addActionListener(e -> addProduct());
-        updateButton.addActionListener(e -> updateProduct());
+        updateButton.addActionListener(e -> {
+            int selectedRow = productTable.getSelectedRow();
+            if (selectedRow >= 0) {
+                // Retrieve product information from the selected row
+                Object id = tableModel.getValueAt(selectedRow, 0);
+                Object name = tableModel.getValueAt(selectedRow, 1);
+                Object category = tableModel.getValueAt(selectedRow, 2);
+                Object price = tableModel.getValueAt(selectedRow, 3);
+                Object availability = tableModel.getValueAt(selectedRow, 4);
+
+                // Format the information for the popup
+                String productInfo = String.format(
+                        "Product Details:\n" +
+                        "ID: %s\n" +
+                        "Name: %s\n" +
+                        "Category: %s\n" +
+                        "Price: %.2f\n" +
+                        "Available: %s",
+                        id, name, category, (Double) price, availability
+                );
+
+                // Show the popup
+                JOptionPane.showMessageDialog(this, productInfo, "Product Information", JOptionPane.INFORMATION_MESSAGE);
+
+                // Proceed with the update logic
+                updateProduct();
+            } else {
+                JOptionPane.showMessageDialog(this, "Please select a product to update.", "Selection Error", JOptionPane.WARNING_MESSAGE);
+            }
+        });
         deleteButton.addActionListener(e -> deleteProduct());
     }
 

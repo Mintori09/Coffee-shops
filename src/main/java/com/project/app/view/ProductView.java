@@ -62,6 +62,7 @@ public class ProductView extends JPanel {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 button.setBackground(new Color(0x5D4037)); // Slightly darker on hover
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 button.setBackground(new Color(0x6D4C41)); // Restore original color
             }
@@ -125,16 +126,15 @@ public class ProductView extends JPanel {
     private void createCartPanel() {
         cartPanel = new JPanel();
         cartPanel.setLayout(new BorderLayout());
-        cartPanel.setBackground(new Color(0xEFEBE9)); // Background color
-        cartPanel.setBorder(new EmptyBorder(16, 16, 16, 16)); // Padding
-        cartPanel.setPreferredSize(new Dimension(200, getHeight())); // Set a preferred width
+        cartPanel.setBackground(new Color(0xEFEBE9));
+        cartPanel.setBorder(new EmptyBorder(16, 16, 16, 16));
+        cartPanel.setPreferredSize(new Dimension(200, getHeight()));
 
         JLabel titleLabel = new JLabel("Cart Summary");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         cartPanel.add(titleLabel, BorderLayout.NORTH);
 
-        // Placeholder for cart items list
         JTextArea cartItemsArea = new JTextArea("No items in cart.");
         cartItemsArea.setEditable(false);
         cartItemsArea.setBackground(new Color(0xFFF8E1)); // Light cream
@@ -153,17 +153,15 @@ public class ProductView extends JPanel {
 
     private void createTopBar() {
         topBarPanel = new JPanel();
-        topBarPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10)); // Left align, 10px spacing
-        topBarPanel.setBackground(new Color(0xFFF8E1)); // Light cream color
-        topBarPanel.setBorder(new EmptyBorder(10, 10, 10, 10)); // Padding
+        topBarPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        topBarPanel.setBackground(new Color(0xFFF8E1));
+        topBarPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         JTextField searchField = new JTextField(20);
         searchField.setFont(new Font("Arial", Font.PLAIN, 14));
-        // For rounded corners, custom painting or a custom component would be needed
 
         JComboBox<String> filterComboBox = new JComboBox<>(new String[]{"All", "Coffee", "Tea", "Dessert"});
         filterComboBox.setFont(new Font("Arial", Font.PLAIN, 14));
-        // For rounded corners, custom painting or a custom component would be needed
 
         topBarPanel.add(new JLabel("Search:"));
         topBarPanel.add(searchField);

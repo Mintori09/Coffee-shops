@@ -5,12 +5,14 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
-    private static final String URL = "jdbc:mariadb://localhost:3306/CoffeeShop";
+    private static final String URL = "jdbc:mariadb://localhost:3306/coffee";
     private static final String USER = "mintori";
     private static final String PASSWORD = "123";
     public static Connection connection;
 
-    private DatabaseConnection() {}
+    private DatabaseConnection() throws SQLException {
+        getConnection();
+    }
 
     public static void getConnection() throws SQLException {
         if (connection == null || connection.isClosed()) {
@@ -26,6 +28,26 @@ public class DatabaseConnection {
     public static void closeConnection() throws SQLException {
         if (connection != null && !connection.isClosed()) {
             connection.close();
+        }
+    }
+
+    public static boolean checkConnection() {
+        try {
+            getConnection();
+            if (connection != null && !connection.isClosed()) {
+                System.out.println("✅ Kết nối đến cơ sở dữ liệu thành công.");
+                return true;
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Lỗi kết nối cơ sở dữ liệu: " + e.getMessage());
+        }
+        return false;
+    }
+    public static void main(String[] args) throws SQLException {
+        if (DatabaseConnection.checkConnection()) {
+            System.out.println("Connected");
+        } else {
+            System.out.println("Connect failed!");
         }
     }
 }
