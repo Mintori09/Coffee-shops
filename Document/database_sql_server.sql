@@ -1,83 +1,139 @@
-IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'CoffeeShop')
+-- Xóa và tạo lại database
+IF DB_ID('coffee') IS NOT NULL
+    DROP DATABASE coffee;
+GO
+
+CREATE DATABASE coffee;
+GO
+
+USE coffee;
+GO
+
+-- 1. Accounts
+CREATE TABLE accounts (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
+GO
+
+-- 2. Employees
+CREATE TABLE employees (
+    id INT PRIMARY KEY,
+    account_id INT,
+    full_name NVARCHAR(100) NOT NULL,
+    date_of_birth DATE,
+    gender VARCHAR(10),
+    phone_number VARCHAR(20),
+    role VARCHAR(20),
+    hire_date DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (account_id) REFERENCES accounts(id)
+);
+GO
+
+-- 3. Food categories
+CREATE TABLE food_categories (
+    food_category_id INT PRIMARY KEY,
+    food_category_name NVARCHAR(100) NOT NULL
+);
+GO
+
+-- 4. Foods
+CREATE TABLE foods (
+    food_id INT PRIMARY KEY,
+    food_name NVARCHAR(100) NOT NULL,
+    food_category_id INT,
+    price DECIMAL(10,2) NOT NULL CHECK (price >= 0),
+    description NVARCHAR(255),
+    image NVARCHAR(255), -- Image path
+    created_date DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (food_category_id) REFERENCES food_categories(food_category_id)
+);
+GO
+
+-- 5. Bills
+CREATE TABLE bills (
+    bill_id INT PRIMARY KEY,
+    order_date DATE NOT NULL DEFAULT GETDATE(),
+    total_price DECIMAL(10,2) DEFAULT 0,
+    notes NVARCHAR(255),
+    created_date DATETIME DEFAULT GETDATE(),
+    employee_id INT,
+    FOREIGN KEY (employee_id) REFERENCES employees(id)
+);
+GO
+
+-- 6. Bill details
+CREATE TABLE bill_details (
+    bill_id INT NOT NULL,
+    food_id INT NOT NULL,
+    quantity INT NOT NULL CHECK (quantity > 0),
+    price DECIMAL(10,2) NOT NULL CHECK (price >= 0),
+    notes NVARCHAR(255),
+    created_date DATETIME DEFAULT GETDATE(),
+    PRIMARY KEY (bill_id, food_id),
+    FOREIGN KEY (bill_id) REFERENCES bills(bill_id),
+    FOREIGN KEY (food_id) REFERENCES foods(food_id)
+);
+GO
+-- Trigger AFTER INSERT
+CREATE TRIGGER tg_update_total_price_after_insert
+ON bill_details
+AFTER INSERT
+AS
 BEGIN
-    CREATE DATABASE CoffeeShop;
+    UPDATE bills
+    SET total_price = (
+        SELECT SUM(quantity * price)
+        FROM bill_details
+        WHERE bill_id = inserted.bill_id
+    )
+    FROM bills
+    JOIN inserted ON bills.bill_id = inserted.bill_id;
 END;
 GO
 
-USE CoffeeShop;
-GO
-IF OBJECT_ID('NhanVien', 'U') IS NOT NULL DROP TABLE NhanVien;
+-- Trigger AFTER UPDATE
+CREATE TRIGGER tg_update_total_price_after_update
+ON bill_details
+AFTER UPDATE
+AS
+BEGIN
+    -- Cập nhật hóa đơn cũ (nếu bill_id thay đổi)
+    UPDATE bills
+    SET total_price = (
+        SELECT SUM(quantity * price)
+        FROM bill_details
+        WHERE bill_id = deleted.bill_id
+    )
+    FROM bills
+    JOIN deleted ON bills.bill_id = deleted.bill_id;
+
+    -- Cập nhật hóa đơn mới
+    UPDATE bills
+    SET total_price = (
+        SELECT SUM(quantity * price)
+        FROM bill_details
+        WHERE bill_id = inserted.bill_id
+    )
+    FROM bills
+    JOIN inserted ON bills.bill_id = inserted.bill_id;
+END;
 GO
 
-CREATE TABLE NhanVien (
-    MaNhanVien INT PRIMARY KEY,
-    TenNhanVien NVARCHAR(255),
-    SoDienThoai NVARCHAR(20),
-    Email NVARCHAR(255),
-    ChucVu NVARCHAR(100),
-    ThoiGianTao DATETIME DEFAULT GETDATE(),
-    ThoiGianCapNhat DATETIME DEFAULT GETDATE()
-);
-GO
-
-INSERT INTO NhanVien VALUES
-(1, N'Nguyễn Văn A', '0909123456', 'a@example.com', N'Thu ngân', '2025-05-12 13:52:11', '2025-05-12 13:52:11'),
-(2, N'Trần Thị B', '0912345678', 'b@example.com', N'Pha chế', '2025-05-12 13:52:11', '2025-05-12 13:52:11');
-GO
-IF OBJECT_ID('HoaDon', 'U') IS NOT NULL DROP TABLE HoaDon;
-GO
-
-CREATE TABLE HoaDon (
-    MaHoaDon INT PRIMARY KEY,
-    MaNhanVien INT FOREIGN KEY REFERENCES NhanVien(MaNhanVien),
-    ThoiGianThanhToan DATETIME,
-    TongTienPhaiTra DECIMAL(10,2),
-    TrangThai NVARCHAR(50),
-    GhiChu NVARCHAR(MAX),
-    ThoiGianTao DATETIME DEFAULT GETDATE()
-);
-GO
-
-INSERT INTO HoaDon VALUES
-(1, 1, '2025-05-12 13:52:11', 55000.00, N'Đã thanh toán', N'Khách thanh toán tiền mặt', '2025-05-12 13:52:11'),
-(2, 2, '2025-05-12 13:52:11', 30000.00, N'Chưa thanh toán', N'', '2025-05-12 13:52:11');
-GO
-IF OBJECT_ID('LoaiMon', 'U') IS NOT NULL DROP TABLE LoaiMon;
-GO
-
-CREATE TABLE LoaiMon (
-    MaLoaiMon INT PRIMARY KEY,
-    TenLoaiMon NVARCHAR(255),
-    MoTa NVARCHAR(MAX),
-    PhanLoai NVARCHAR(MAX),
-    HinhAnh NVARCHAR(100),
-    ThoiGianTao DATETIME DEFAULT GETDATE(),
-    ThoiGianCapNhat DATETIME DEFAULT GETDATE()
-);
-GO
-
-INSERT INTO LoaiMon VALUES
-(1, N'Cà phê sữa', N'Các loại cà phê truyền thống', N'Cà phê', 'images/milk_coffee.jpg', '2025-05-12 13:52:11', '2025-05-12 13:52:11'),
-(2, N'Sinh tố', N'Sinh tố trái cây tươi', N'Sinh tố', 'images/sinh_to.jpg', '2025-05-12 13:52:11', '2025-05-12 13:52:11'),
-(3, N'Trà sữa', N'Trà kết hợp với sữa và topping', N'Trà sữa', 'images/milk_tea.jpg', '2025-05-12 13:52:11', '2025-05-12 13:52:11');
-GO
-IF OBJECT_ID('ChiTietHoaDon', 'U') IS NOT NULL DROP TABLE ChiTietHoaDon;
-GO
-
-CREATE TABLE ChiTietHoaDon (
-    MaChiTietHD INT PRIMARY KEY,
-    MaHoaDon INT FOREIGN KEY REFERENCES HoaDon(MaHoaDon),
-    MaMon INT, -- Chưa có bảng Món => để INT tạm thời
-    SoLuong INT,
-    DonGiaLucDat DECIMAL(10,2),
-    ThanhTien DECIMAL(10,2),
-    GhiChuMon NVARCHAR(255),
-    ThoiGianTao DATETIME DEFAULT GETDATE()
-);
-GO
-
-INSERT INTO ChiTietHoaDon (MaChiTietHD, MaHoaDon, MaMon, SoLuong, DonGiaLucDat, GhiChuMon, ThoiGianTao) VALUES
-(1, 1, 1, 1, 20000.00, N'', '2025-05-12 13:52:11'),
-(2, 1, 2, 1, 35000.00, N'Ít đá', '2025-05-12 13:52:11'),
-(3, 2, 3, 1, 30000.00, N'Không đường', '2025-05-12 13:52:11');
+-- Trigger AFTER DELETE
+CREATE TRIGGER tg_update_total_price_after_delete
+ON bill_details
+AFTER DELETE
+AS
+BEGIN
+    UPDATE bills
+    SET total_price = (
+        SELECT SUM(quantity * price)
+        FROM bill_details
+        WHERE bill_id = deleted.bill_id
+    )
+    FROM bills
+    JOIN deleted ON bills.bill_id = deleted.bill_id;
+END;
 GO
