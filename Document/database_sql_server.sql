@@ -1,4 +1,4 @@
--- Xóa và tạo lại database
+-- Xóa và tạo lại cơ sở dữ liệu
 IF DB_ID('coffee') IS NOT NULL
     DROP DATABASE coffee;
 GO
@@ -19,7 +19,7 @@ GO
 
 -- 2. Employees
 CREATE TABLE employees (
-    id INT PRIMARY KEY,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     account_id INT,
     full_name NVARCHAR(100) NOT NULL,
     date_of_birth DATE,
@@ -31,31 +31,31 @@ CREATE TABLE employees (
 );
 GO
 
--- 3. Food categories
-CREATE TABLE food_categories (
-    food_category_id INT PRIMARY KEY,
+-- 3. Drink categories (renamed from food_categories)
+CREATE TABLE drink_categories (
+    food_category_id INT IDENTITY(1,1) PRIMARY KEY,
     food_category_name NVARCHAR(100) NOT NULL
 );
 GO
 
--- 4. Foods
-CREATE TABLE foods (
-    food_id INT PRIMARY KEY,
+-- 4. Drinks (renamed from foods)
+CREATE TABLE drinks (
+    food_id INT IDENTITY(1,1) PRIMARY KEY,
     food_name NVARCHAR(100) NOT NULL,
     food_category_id INT,
-    price DECIMAL(10,2) NOT NULL CHECK (price >= 0),
+    price DECIMAL(10, 2) NOT NULL CHECK (price >= 0),
     description NVARCHAR(255),
-    image NVARCHAR(255), -- Image path
+    image NVARCHAR(255),
     created_date DATETIME DEFAULT GETDATE(),
-    FOREIGN KEY (food_category_id) REFERENCES food_categories(food_category_id)
+    FOREIGN KEY (food_category_id) REFERENCES drink_categories(food_category_id)
 );
 GO
 
 -- 5. Bills
 CREATE TABLE bills (
-    bill_id INT PRIMARY KEY,
-    order_date DATE NOT NULL DEFAULT GETDATE(),
-    total_price DECIMAL(10,2) DEFAULT 0,
+    bill_id INT IDENTITY(1,1) PRIMARY KEY,
+    order_date DATE NOT NULL DEFAULT CAST(GETDATE() AS DATE),
+    total_price DECIMAL(10, 2) DEFAULT 0,
     notes NVARCHAR(255),
     created_date DATETIME DEFAULT GETDATE(),
     employee_id INT,
@@ -63,21 +63,22 @@ CREATE TABLE bills (
 );
 GO
 
--- 6. Bill details
+-- 6. Bill Details
 CREATE TABLE bill_details (
     bill_id INT NOT NULL,
     food_id INT NOT NULL,
     quantity INT NOT NULL CHECK (quantity > 0),
-    price DECIMAL(10,2) NOT NULL CHECK (price >= 0),
+    price DECIMAL(10, 2) NOT NULL CHECK (price >= 0),
     notes NVARCHAR(255),
     created_date DATETIME DEFAULT GETDATE(),
     PRIMARY KEY (bill_id, food_id),
     FOREIGN KEY (bill_id) REFERENCES bills(bill_id),
-    FOREIGN KEY (food_id) REFERENCES foods(food_id)
+    FOREIGN KEY (food_id) REFERENCES drinks(food_id)
 );
 GO
--- Trigger AFTER INSERT
-CREATE TRIGGER tg_update_total_price_after_insert
+
+-- 7. Trigger: AFTER INSERT
+CREATE TRIGGER trg_update_total_price_after_insert
 ON bill_details
 AFTER INSERT
 AS
@@ -86,43 +87,43 @@ BEGIN
     SET total_price = (
         SELECT SUM(quantity * price)
         FROM bill_details
-        WHERE bill_id = inserted.bill_id
+        WHERE bill_details.bill_id = bills.bill_id
     )
-    FROM bills
-    JOIN inserted ON bills.bill_id = inserted.bill_id;
+    WHERE bill_id IN (SELECT DISTINCT bill_id FROM inserted);
 END;
 GO
 
--- Trigger AFTER UPDATE
-CREATE TRIGGER tg_update_total_price_after_update
+-- 8. Trigger: AFTER UPDATE
+CREATE TRIGGER trg_update_total_price_after_update
 ON bill_details
 AFTER UPDATE
 AS
 BEGIN
-    -- Cập nhật hóa đơn cũ (nếu bill_id thay đổi)
+    -- Cập nhật hóa đơn cũ nếu bill_id thay đổi
     UPDATE bills
     SET total_price = (
         SELECT SUM(quantity * price)
         FROM bill_details
-        WHERE bill_id = deleted.bill_id
+        WHERE bill_details.bill_id = bills.bill_id
     )
-    FROM bills
-    JOIN deleted ON bills.bill_id = deleted.bill_id;
+    WHERE bill_id IN (
+        SELECT DISTINCT bill_id FROM deleted
+        WHERE bill_id NOT IN (SELECT bill_id FROM inserted)
+    );
 
     -- Cập nhật hóa đơn mới
     UPDATE bills
     SET total_price = (
         SELECT SUM(quantity * price)
         FROM bill_details
-        WHERE bill_id = inserted.bill_id
+        WHERE bill_details.bill_id = bills.bill_id
     )
-    FROM bills
-    JOIN inserted ON bills.bill_id = inserted.bill_id;
+    WHERE bill_id IN (SELECT DISTINCT bill_id FROM inserted);
 END;
 GO
 
--- Trigger AFTER DELETE
-CREATE TRIGGER tg_update_total_price_after_delete
+-- 9. Trigger: AFTER DELETE
+CREATE TRIGGER trg_update_total_price_after_delete
 ON bill_details
 AFTER DELETE
 AS
@@ -131,9 +132,8 @@ BEGIN
     SET total_price = (
         SELECT SUM(quantity * price)
         FROM bill_details
-        WHERE bill_id = deleted.bill_id
+        WHERE bill_details.bill_id = bills.bill_id
     )
-    FROM bills
-    JOIN deleted ON bills.bill_id = deleted.bill_id;
+    WHERE bill_id IN (SELECT DISTINCT bill_id FROM deleted);
 END;
 GO
