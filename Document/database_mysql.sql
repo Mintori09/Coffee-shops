@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS accounts (
 
 -- 2. Employees
 CREATE TABLE IF NOT EXISTS employees (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     account_id INT,
     full_name NVARCHAR(100) NOT NULL,
     date_of_birth DATE,
@@ -24,14 +24,14 @@ CREATE TABLE IF NOT EXISTS employees (
 );
 
 -- 3. Food categories
-CREATE TABLE IF NOT EXISTS food_categories (
-    food_category_id INT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS drink_categories (
+    food_category_id INT AUTO_INCREMENT PRIMARY KEY,
     food_category_name NVARCHAR(100) NOT NULL
 );
 
 -- 4. Foods
-CREATE TABLE IF NOT EXISTS foods (
-    food_id INT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS drinks (
+    food_id INT AUTO_INCREMENT PRIMARY KEY,
     food_name NVARCHAR(100) NOT NULL,
     food_category_id INT,
     price DECIMAL(10,2) NOT NULL CHECK (price >= 0),
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS foods (
 
 -- 5. Bills
 CREATE TABLE IF NOT EXISTS bills (
-    bill_id INT PRIMARY KEY,
+    bill_id INT AUTO_INCREMENT PRIMARY KEY,
     order_date DATE NOT NULL DEFAULT CURRENT_DATE,
     total_price DECIMAL(10,2) DEFAULT 0,
     notes NVARCHAR(255),
