@@ -3,6 +3,8 @@ package com.project.app.service;
 import com.project.app.dao.AccountDAO;
 import com.project.app.model.Account;
 
+import java.sql.SQLException;
+
 public class AuthService {
     private final AccountDAO accountDAO;
 
@@ -10,7 +12,7 @@ public class AuthService {
         this.accountDAO = accountDAO;
     }
 
-    public Account login(String username, String password) {
+    public Account login(String username, String password) throws SQLException {
         Account user = accountDAO.findByUsername(username);
         if (user != null && password.equals(user.getPassword())) {
             return user;

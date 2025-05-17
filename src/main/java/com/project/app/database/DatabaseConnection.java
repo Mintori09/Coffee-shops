@@ -14,7 +14,7 @@ public class DatabaseConnection {
         getConnection();
     }
 
-    public static void getConnection() throws SQLException {
+    public static Connection getConnection() throws SQLException {
         if (connection == null || connection.isClosed()) {
             try {
                 Class.forName("org.mariadb.jdbc.Driver");
@@ -23,6 +23,7 @@ public class DatabaseConnection {
                 throw new SQLException("MariaDB JDBC Driver not found", e);
             }
         }
+        return connection;
     }
 
     public static void closeConnection() throws SQLException {

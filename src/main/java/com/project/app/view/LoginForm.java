@@ -1,6 +1,7 @@
 package com.project.app.view;
 
 import com.project.app.dao.AccountDAO;
+import com.project.app.dao.impl.AccountDAOImpl;
 import com.project.app.model.Account;
 import com.project.app.service.AuthService;
 import com.project.app.session.Session;
@@ -9,20 +10,11 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 
 public class LoginForm extends JFrame implements ActionListener, FocusListener {
     // Components
-    private final AuthService authService = new AuthService(new AccountDAO() {
-        @Override
-        public Account findById() {
-            return null;
-        }
-
-        @Override
-        public Account findByUsername(String username) {
-            return null;
-        }
-    });
+    private final AuthService authService = new AuthService(new AccountDAOImpl());
     private JLabel titleLabel, userLabel, passwordLabel, messageLabel;
     private JTextField userTextField;
     private JPasswordField passwordField;
@@ -194,7 +186,7 @@ public class LoginForm extends JFrame implements ActionListener, FocusListener {
         passwordField.setBorder(compoundBorder(BORDER_DEFAULT));
     }
 
-    private void handleLogin() throws InterruptedException {
+    private void handleLogin() throws InterruptedException, SQLException {
         String user = userTextField.getText().trim();
         String pass = new String(passwordField.getPassword()).trim();
         resetBorders();
@@ -225,6 +217,8 @@ public class LoginForm extends JFrame implements ActionListener, FocusListener {
             try {
                 handleLogin();
             } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
         }
