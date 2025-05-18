@@ -251,11 +251,14 @@ public class ProductManagementView extends JPanel {
     private void deleteProduct() {
         int selectedRow = productTable.getSelectedRow();
         if (selectedRow >= 0) {
-            // Remove data from the table model
-            tableModel.removeRow(selectedRow);
+            int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this product?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                // Remove data from the table model
+                tableModel.removeRow(selectedRow);
 
-            // Clear the form
-            clearForm();
+                // Clear the form
+                clearForm();
+            }
         } else {
             JOptionPane.showMessageDialog(this, "Please select a product to delete.", "Selection Error", JOptionPane.WARNING_MESSAGE);
         }

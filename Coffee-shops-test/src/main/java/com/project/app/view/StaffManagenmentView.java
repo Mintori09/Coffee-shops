@@ -207,4 +207,8 @@ public class StaffManagenmentView extends JPanel {
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         return btn;
     }
+
+    public static void main(String[] args) {
+        new StaffManagenmentView().setVisible(true);
+    }
 }
