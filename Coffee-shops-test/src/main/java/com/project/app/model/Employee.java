@@ -9,18 +9,16 @@ public class Employee {
     private LocalDate dateOfBirth;
     private String gender;
     private String phoneNumber;
-    private String role;
 
     public Employee() {
     }
 
-    public Employee(String id, String fullName, LocalDate dateOfBirth, String gender, String phoneNumber, String role, LocalDateTime hireDate) {
+    public Employee(String id, String fullName, LocalDate dateOfBirth, String gender, String phoneNumber,  LocalDateTime hireDate) {
         this.id = id;
         this.fullName = fullName;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.phoneNumber = phoneNumber;
-        this.role = role;
         this.hireDate = hireDate;
     }
     
@@ -40,14 +38,6 @@ public class Employee {
 
     public void setHireDate(LocalDateTime hireDate) {
         this.hireDate = hireDate;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
     }
 
     public String getPhoneNumber() {

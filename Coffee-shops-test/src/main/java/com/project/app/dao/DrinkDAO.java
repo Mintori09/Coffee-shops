@@ -1,4 +1,4 @@
 package com.project.app.dao;
 
-public interface FoodDAO {
+public interface DrinkDAO {
 }

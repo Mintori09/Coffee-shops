@@ -61,15 +61,14 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
     @Override
     public boolean addEmployee(Employee emp) {
-        String sql = "INSERT INTO employees (id, full_name, date_of_birth, gender, phone_number, role, hire_date) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO employees (id, full_name, date_of_birth, gender, phone_number,  hire_date) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setNString(1, emp.getId());
             ps.setString(2, emp.getFullName());
             ps.setObject(3, emp.getDateOfBirth());
             ps.setString(4, emp.getGender());
             ps.setString(5, emp.getPhoneNumber());
-            ps.setString(6, emp.getRole());
-            ps.setObject(7, emp.getHireDate());
+            ps.setObject(6, emp.getHireDate());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
