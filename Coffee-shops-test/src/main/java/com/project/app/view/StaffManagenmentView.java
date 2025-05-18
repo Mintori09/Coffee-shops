@@ -123,7 +123,6 @@ public class StaffManagenmentView extends JPanel {
                     emp.getId(),
                     emp.getFullName(),
                     emp.getPhoneNumber(), // hoặc trường phù hợp
-                    emp.getRole()
                 });
             }
         } catch (Exception e) {

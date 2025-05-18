@@ -26,7 +26,6 @@ public class EmployeeDAOImpl implements EmployeeDAO {
                 emp.setDateOfBirth(rs.getObject("date_of_birth", java.time.LocalDate.class));
                 emp.setGender(rs.getString("gender"));
                 emp.setPhoneNumber(rs.getString("phone_number"));
-                emp.setRole(rs.getString("role"));
                 emp.setHireDate(rs.getObject("hire_date", java.time.LocalDateTime.class));
                 list.add(emp);
             }
@@ -49,7 +48,6 @@ public class EmployeeDAOImpl implements EmployeeDAO {
                 emp.setDateOfBirth(rs.getObject("date_of_birth", java.time.LocalDate.class));
                 emp.setGender(rs.getString("gender"));
                 emp.setPhoneNumber(rs.getString("phone_number"));
-                emp.setRole(rs.getString("role"));
                 emp.setHireDate(rs.getObject("hire_date", java.time.LocalDateTime.class));
                 return emp;
             }
@@ -84,9 +82,8 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             ps.setObject(2, emp.getDateOfBirth());
             ps.setString(3, emp.getGender());
             ps.setString(4, emp.getPhoneNumber());
-            ps.setString(5, emp.getRole());
-            ps.setObject(6, emp.getHireDate());
-            ps.setString(7, emp.getId());
+            ps.setObject(5, emp.getHireDate());
+            ps.setString(6, emp.getId());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
