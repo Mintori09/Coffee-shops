@@ -5,18 +5,18 @@ import java.time.LocalDateTime;
 
 public class BillDetail {
     private String billId;
-    private String foodId;
+    private String drinkId;
     private int quantity;
-    private Double price; // Price at time of sale
+    private Double price;
     private String notes;
     private LocalDateTime createdDate;
 
     public BillDetail() {
     }
 
-    public BillDetail(String billId, String foodId, int quantity, Double price, String notes, LocalDateTime createdDate) {
+    public BillDetail(String billId, String drinkId, int quantity, Double price, String notes, LocalDateTime createdDate) {
         this.billId = billId;
-        this.foodId = foodId;
+        this.drinkId = drinkId;
         this.quantity = quantity;
         this.price = price;
         this.notes = notes;
@@ -31,11 +31,11 @@ public class BillDetail {
     }
 
     public String getFoodId() {
-        return foodId;
+        return drinkId;
     }
 
-    public void setFoodId(String foodId) {
-        this.foodId = foodId;
+    public void setFoodId(String drinkId) {
+        this.drinkId = drinkId;
     }
 
     public int getQuantity() {

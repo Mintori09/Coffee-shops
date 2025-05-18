@@ -2,22 +2,22 @@ package com.project.app.model;
 
 import java.time.LocalDateTime;
 
-public class Food {
-    private String foodId;
-    private String foodName;
-    private String foodCategoryId;
+public class Drink {
+    private String drinkId;
+    private String drinkName;
+    private String drinkCategoryId;
     private Double price;
     private String description;
     private String image; // Path to image
     private LocalDateTime createdDate;
 
-    public Food() {
+    public Drink() {
     }
 
-    public Food(String foodId, String foodName, String foodCategoryId, Double price, String description, String image, LocalDateTime createdDate) {
-        this.foodId = foodId;
-        this.foodName = foodName;
-        this.foodCategoryId = foodCategoryId;
+    public Drink(String drinkId, String drinkName, String drinkCategoryId, Double price, String description, String image, LocalDateTime createdDate) {
+        this.drinkId = drinkId;
+        this.drinkName = drinkName;
+        this.drinkCategoryId = drinkCategoryId;
         this.price = price;
         this.description = description;
         this.image = image;
@@ -25,27 +25,27 @@ public class Food {
     }
 
     public String getFoodId() {
-        return foodId;
+        return drinkId;
     }
 
-    public void setFoodId(String foodId) {
-        this.foodId = foodId;
+    public void setFoodId(String drinkId) {
+        this.drinkId = drinkId;
     }
 
     public String getFoodName() {
-        return foodName;
+        return drinkName;
     }
 
-    public void setFoodName(String foodName) {
-        this.foodName = foodName;
+    public void setFoodName(String drinkName) {
+        this.drinkName = drinkName;
     }
 
     public String getFoodCategoryId() {
-        return foodCategoryId;
+        return drinkCategoryId;
     }
 
-    public void setFoodCategoryId(String foodCategoryId) {
-        this.foodCategoryId = foodCategoryId;
+    public void setFoodCategoryId(String drinkCategoryId) {
+        this.drinkCategoryId = drinkCategoryId;
     }
 
     public Double getPrice() {
