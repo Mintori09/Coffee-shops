@@ -80,7 +80,7 @@
       <recent name="$PROJECT_DIR$/src/main/resources/images" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.DatabaseConnection">
     <configuration name="DatabaseConnection" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.project.app.database.DatabaseConnection" />
       <module name="CoffeeShop" />
@@ -178,6 +178,7 @@
       <workItem from="1747324137013" duration="20000" />
       <workItem from="1747324166701" duration="1902000" />
       <workItem from="1747466681926" duration="2863000" />
+      <workItem from="1747584504022" duration="4000" />
     </task>
     <servers />
   </component>
