@@ -18,8 +18,6 @@ public class ProductManagementView extends JPanel {
     private JTextField drinkNameField;
     private JComboBox<String> categoryComboBox;
     private JSpinner priceSpinner;
-    // Removed availabilityCheckBox as it's not backed by a database column
-    // private JCheckBox availabilityCheckBox;
     private JButton addButton;
     private JButton updateButton;
     private JButton deleteButton;
@@ -31,7 +29,6 @@ public class ProductManagementView extends JPanel {
         setBackground(new Color(245, 235, 220)); // Soft beige background
 
         // Create table
-        // Removed "Còn hàng" column
         String[] columnNames = {"ID", "Tên đồ uống", "Danh mục", "Giá"};
         tableModel = new DefaultTableModel(columnNames, 0);
         drinkTable = new JTable(tableModel);
@@ -95,15 +92,6 @@ public class ProductManagementView extends JPanel {
                 BorderFactory.createLineBorder(new Color(139, 69, 19), 1),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         formPanel.add(priceSpinner, gbc);
-
-        // Removed Availability checkbox
-        // gbc.gridx = 0;
-        // gbc.gridy = 3;
-        // formPanel.add(new JLabel("Còn hàng:"), gbc);
-        // gbc.gridx = 1;
-        // availabilityCheckBox = new JCheckBox();
-        // availabilityCheckBox.setBackground(new Color(245, 235, 220)); // Soft beige background
-        // formPanel.add(availabilityCheckBox, gbc);
 
         // Button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
@@ -179,7 +167,7 @@ public class ProductManagementView extends JPanel {
                     // Price is column 3 in the table model
                     Object priceValue = tableModel.getValueAt(selectedRow, 3);
                     if (priceValue instanceof Number) {
-                        priceSpinner.setValue(((Number) priceValue).doubleValue());
+                         priceSpinner.setValue(((Number) priceValue).doubleValue());
                     } else if (priceValue != null) {
                         try {
                             priceSpinner.setValue(Double.parseDouble(priceValue.toString()));
@@ -190,8 +178,6 @@ public class ProductManagementView extends JPanel {
                     } else {
                          priceSpinner.setValue(0.0); // Giá trị mặc định nếu null
                     }
-
-                    // Removed logic for availabilityCheckBox
                 }
             }
         });
@@ -218,7 +204,6 @@ public class ProductManagementView extends JPanel {
              categoryComboBox.setSelectedIndex(-1);
         }
         priceSpinner.setValue(0.0);
-        // Removed availabilityCheckBox.setSelected(false);
         drinkTable.clearSelection();
     }
 
@@ -238,6 +223,9 @@ public class ProductManagementView extends JPanel {
 
             rs.close();
             stmt.close();
+            // It's generally better to close the connection here too,
+            // or use try-with-resources as in loadDrinks().
+            // Assuming DatabaseConnection handles pooling or auto-closing.
         } catch (SQLException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this,
@@ -247,8 +235,7 @@ public class ProductManagementView extends JPanel {
         }
     }
 
-    private void loadDrinks() throws SQLException {
-        // Removed d.available from SELECT statement
+    private void loadDrinks() { // Removed throws SQLException here
         String sql = "SELECT d.food_id, d.food_name, dc.food_category_name, d.price " +
                      "FROM drinks d " +
                      "JOIN drink_categories dc ON d.food_category_id = dc.food_category_id";
@@ -264,9 +251,14 @@ public class ProductManagementView extends JPanel {
                     rs.getString("food_name"),
                     rs.getString("food_category_name"),
                     rs.getDouble("price")
-                    // Removed rs.getBoolean("available")
                 });
             }
+        } catch (SQLException e) { // Catch SQLException here instead of throwing
+             e.printStackTrace();
+             JOptionPane.showMessageDialog(this,
+                 "Lỗi khi tải danh sách đồ uống: " + e.getMessage(),
+                 "Lỗi Database",
+                 JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -308,7 +300,6 @@ public class ProductManagementView extends JPanel {
 
 
         // Nếu không trùng tên, tiến hành thêm đồ uống
-        // Removed 'available' column from INSERT statement
         String insertSql = "INSERT INTO drinks (food_name, food_category_id, price) " +
                            "SELECT ?, dc.food_category_id, ? " +
                            "FROM drink_categories dc WHERE dc.food_category_name = ?";
@@ -318,7 +309,6 @@ public class ProductManagementView extends JPanel {
 
             stmt.setString(1, name);
             stmt.setDouble(2, price);
-            // Removed stmt.setBoolean(3, availabilityCheckBox.isSelected());
             stmt.setString(3, category); // Parameter index changed
 
             stmt.executeUpdate();
@@ -374,7 +364,7 @@ public class ProductManagementView extends JPanel {
             // Sử dụng tên hiện tại từ form để kiểm tra trùng
              String checkSql = "SELECT COUNT(*) FROM drinks WHERE food_name = ? AND food_id <> ?";
              try (Connection conn = DatabaseConnection.getConnection();
-                  PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
+                   PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
 
                  checkStmt.setString(1, currentName); // Sử dụng currentName
                  checkStmt.setInt(2, id); // Loại trừ ID của bản ghi đang cập nhật
@@ -455,10 +445,10 @@ public class ProductManagementView extends JPanel {
         int selectedRow = drinkTable.getSelectedRow();
         if (selectedRow >= 0) {
              int confirm = JOptionPane.showConfirmDialog(this,
-                "Bạn có chắc chắn muốn xóa đồ uống này không?",
-                "Xác nhận xóa",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                 "Bạn có chắc chắn muốn xóa đồ uống này không?",
+                 "Xác nhận xóa",
+                 JOptionPane.YES_NO_OPTION,
+                 JOptionPane.QUESTION_MESSAGE);
 
             if (confirm == JOptionPane.YES_OPTION) {
                 int id = (int) tableModel.getValueAt(selectedRow, 0);
@@ -466,7 +456,7 @@ public class ProductManagementView extends JPanel {
                 String sql = "DELETE FROM drinks WHERE food_id = ?";
 
                 try (Connection conn = DatabaseConnection.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(sql)) {
+                   PreparedStatement stmt = conn.prepareStatement(sql)) {
 
                     stmt.setInt(1, id);
                     stmt.executeUpdate();
