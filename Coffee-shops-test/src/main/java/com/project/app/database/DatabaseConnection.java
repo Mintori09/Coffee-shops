@@ -5,7 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
-	private static final String URL = "jdbc:sqlserver://DESKTOP-SVSMN8V:1433;databaseName=coffee;integratedSecurity=true;encrypt=true;trustServerCertificate=true";
+    private static String URL = "jdbc:mariadb://localhost:3306/coffee"; // Replace with your DB name
+    private static String USERNAME = "mintori"; // Replace with your username
+    private static String PASSWORD = "123"; // Replace with your password
 
     public static Connection connection;
 
@@ -16,13 +18,13 @@ public class DatabaseConnection {
     public static Connection getConnection() throws SQLException {
         if (connection == null || connection.isClosed()) {
             try {
-                Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-                connection = DriverManager.getConnection(URL);
+                Class.forName("org.mariadb.jdbc.Driver");
+                connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             } catch (ClassNotFoundException e) {
                 throw new SQLException("SQL Server JDBC Driver not found", e);
             }
         }
-		return connection;
+        return connection;
     }
 
     public static void closeConnection() throws SQLException {

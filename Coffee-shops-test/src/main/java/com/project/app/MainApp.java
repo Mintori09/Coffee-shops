@@ -4,7 +4,7 @@ import com.project.app.view.LoginForm;
 
 import javax.swing.*;
 
-public class MainApp {
+class MainApp {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new LoginForm().setVisible(true));
     }
