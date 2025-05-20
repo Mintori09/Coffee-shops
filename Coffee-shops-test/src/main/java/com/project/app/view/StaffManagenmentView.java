@@ -47,12 +47,8 @@ public class StaffManagenmentView extends JPanel {
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
         JButton btnAdd = createButton("Add", "\u2795", new Color(139, 69, 19));
         JButton btnUpdate = createButton("Update", "\u270E", new Color(205, 133, 63));
-        JButton btnDelete = createButton("Delete", "\u1F5D1", new Color(205, 92, 92));
-        JButton btnClear = createButton("Clear", "\u274C", new Color(160, 82, 45));
         buttonPanel.add(btnAdd);
         buttonPanel.add(btnUpdate);
-        buttonPanel.add(btnDelete);
-        buttonPanel.add(btnClear);
         add(buttonPanel, BorderLayout.SOUTH);
 
         staffInputSidebar = new StaffInputSidebar();
@@ -75,8 +71,6 @@ public class StaffManagenmentView extends JPanel {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn nhân viên để cập nhật!", "Thông báo", JOptionPane.WARNING_MESSAGE);
             }
         });
-        btnDelete.addActionListener(e -> deleteStaff());
-        btnClear.addActionListener(e -> staffTable.clearSelection());
 
         staffInputSidebar.addSaveButtonListener(e -> handleSaveStaff());
         staffInputSidebar.addCancelButtonListener(e -> handleCancelStaff());
@@ -164,7 +158,7 @@ public class StaffManagenmentView extends JPanel {
 
                 Account account = new Account();
                 account.setUsername(username);
-                account.setPassword(com.project.app.util.PasswordUtil.hashPassword(password));
+                account.setPassword(password);
                 account.setRole(role);
 
                 int accountId = accountDAO.create(account);
@@ -212,7 +206,7 @@ public class StaffManagenmentView extends JPanel {
 
                 existingAccount.setUsername(username);
                 if (!password.isEmpty()) {
-                    existingAccount.setPassword(com.project.app.util.PasswordUtil.hashPassword(password));
+                    existingAccount.setPassword(password);
                 }
                 existingAccount.setRole(role);
                 boolean accountUpdated = accountDAO.updateAccount(existingAccount);
@@ -252,65 +246,6 @@ public class StaffManagenmentView extends JPanel {
     private void handleCancelStaff() {
         staffInputSidebar.setVisible(false);
         staffTable.clearSelection();
-    }
-
-    private void deleteStaff() {
-        int selectedRow = staffTable.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn nhân viên để xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa nhân viên này?", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            DefaultTableModel model = (DefaultTableModel) staffTable.getModel();
-            int employeeId = (int) model.getValueAt(selectedRow, 0);
-            Connection conn = null;
-            try {
-                conn = DatabaseConnection.getConnection();
-                conn.setAutoCommit(false);
-                EmployeeDAO employeeDAO = new EmployeeDAOImpl();
-                AccountDAO accountDAO = new AccountDAOImpl();
-
-                Employee existingEmployee = employeeDAO.findById(employeeId);
-                if (existingEmployee != null) {
-                    boolean employeeDeleted = employeeDAO.delete(employeeId);
-                    boolean accountDeleted = true;
-                    if (existingEmployee.getAccountId() > 0) {
-                        accountDeleted = accountDAO.deleteAccountById(existingEmployee.getAccountId());
-                    }
-
-                    if (employeeDeleted && accountDeleted) {
-                        conn.commit();
-                        JOptionPane.showMessageDialog(this, "Xóa nhân viên thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                        loadDataToTable();
-                    } else {
-                        conn.rollback();
-                        JOptionPane.showMessageDialog(this, "Xóa nhân viên thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(this, "Không tìm thấy nhân viên để xóa.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Lỗi khi xóa nhân viên: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-                if (conn != null) {
-                    try {
-                        conn.rollback();
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            } finally {
-                if (conn != null) {
-                    try {
-                        conn.setAutoCommit(true);
-                        conn.close();
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            }
-        }
     }
 
     private JButton createButton(String text, String icon, Color bgColor) {

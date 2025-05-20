@@ -1,60 +1,48 @@
 package com.project.app.view;
 
-import com.project.app.dao.impl.StatisticDAOImpl;
-import com.project.app.dao.StatisticDAO;
-import com.project.app.view.Component.OverviewPanel;
-import com.project.app.view.Component.ChartsPanel;
-import com.project.app.view.Component.RecentActivityPanel;
-
 import javax.swing.*;
 import java.awt.*;
-import java.sql.SQLException;
 
 public class HomeView extends JPanel {
 
     public HomeView() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBackground(new Color(245, 245, 245)); // Light background
-        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Add padding
-        setPreferredSize(new Dimension(800, 600));
-        setMaximumSize(new Dimension(800, 600));
-        add(new Label("Welcome"));
-        setVisible(true);
-    }
-    private void createUIComponents() {
+        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBackground(new Color(245, 245, 245)); // Light background
-        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Add padding
+        ImageIcon logoIcon = new ImageIcon(getClass().getResource("/images/icon/logo_icon.png"));
+        JLabel logoLabel = new JLabel(logoIcon);
+        logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Add Quick Overview Section
-        String totalOrders = "N/A";
-        String totalRevenue = "N/A";
-        StatisticDAOImpl statisticDAO = new StatisticDAOImpl();
-        try {
-            totalOrders = statisticDAO.getTotalOrders(StatisticDAOImpl.TimeRange.TODAY);
-            totalRevenue = statisticDAO.getTotalRevenue(StatisticDAOImpl.TimeRange.TODAY);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // Handle the exception, maybe show an error message on the panel
-        }
-        add(new OverviewPanel(totalOrders, totalRevenue));
-        add(Box.createVerticalStrut(20)); // Spacing
+        JLabel titleLabel = new JLabel("Ứng dụng quản lý quán cà phê");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Add Charts Section
-        add(new ChartsPanel());
-        add(Box.createVerticalStrut(20)); // Spacing
+        JTextArea descriptionArea = new JTextArea("Ứng dụng này giúp quản lý hiệu quả các hoạt động của quán cà phê, bao gồm quản lý nhân viên, sản phẩm, hóa đơn và thống kê doanh thu.");
+        descriptionArea.setFont(new Font("Arial", Font.PLAIN, 14));
+        descriptionArea.setWrapStyleWord(true);
+        descriptionArea.setLineWrap(true);
+        descriptionArea.setEditable(false);
+        descriptionArea.setBackground(getBackground());
+        descriptionArea.setAlignmentX(Component.CENTER_ALIGNMENT);
+        descriptionArea.setMaximumSize(new Dimension(400, 100)); // Limit the width
 
-        // Add Recent Activity Section
-        add(new RecentActivityPanel());
-
-        // Ensure components take up available space
-        setAlignmentX(Component.LEFT_ALIGNMENT);
+        add(Box.createVerticalGlue());
+        add(logoLabel);
+        add(Box.createRigidArea(new Dimension(0, 10))); // Add some space
+        add(titleLabel);
+        add(Box.createRigidArea(new Dimension(0, 10))); // Add some space
+        add(descriptionArea);
+        add(Box.createVerticalGlue());
     }
 
     public static void main(String[] args) {
-        Frame frame = new Frame();
-        frame.add(new HomeView());
-        frame.setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Home View Test");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.add(new HomeView());
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+        });
     }
 }

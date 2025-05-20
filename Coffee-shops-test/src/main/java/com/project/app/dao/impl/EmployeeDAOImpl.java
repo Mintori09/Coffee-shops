@@ -49,6 +49,8 @@ public class EmployeeDAOImpl implements EmployeeDAO {
                 emp.setHireDate(rs.getObject("hire_date", java.time.LocalDateTime.class));
                 emp.setAccountId(rs.getInt("account_id"));
                 return emp;
+            } else {
+                return null;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -125,13 +127,18 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     public boolean delete(int id) {
         String sql = "DELETE FROM employees WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
-            return ps.executeUpdate() > 0;
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 0) {
+                System.out.println("No employee found with ID: " + id);
+            }
+            return affectedRows > 0;
         } catch (SQLException e) {
+            System.err.println("Error deleting employee with ID: " + id);
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     @Override
