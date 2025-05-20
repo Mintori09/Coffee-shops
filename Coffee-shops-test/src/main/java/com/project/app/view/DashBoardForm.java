@@ -96,12 +96,15 @@ public class DashBoardForm extends JFrame {
         JButton ordersButton = createSidebarButton("Orders");
         JButton statsButton = createSidebarButton("Statistics");
         JButton staffManagementButton = createSidebarButton("Staff");
+        JButton billsButton = createSidebarButton("Bills");
 
         homeButton.addActionListener(e -> showContentPanel("HOME"));
         productsButton.addActionListener(e -> showContentPanel("PRODUCTS"));
         ordersButton.addActionListener(e -> showContentPanel("ORDERS"));
         statsButton.addActionListener(e -> showContentPanel("STATS"));
         staffManagementButton.addActionListener(e -> showContentPanel("STAFF"));
+        ordersButton.addActionListener(e -> showContentPanel("ORDERS"));
+        billsButton.addActionListener(e -> showContentPanel("BILLS"));
 
         sidebarPanel.add(homeButton);
         sidebarPanel.add(Box.createVerticalStrut(15));
@@ -115,6 +118,8 @@ public class DashBoardForm extends JFrame {
         } else {
             sidebarPanel.add(ordersButton);
         }
+        sidebarPanel.add(Box.createVerticalStrut(15));
+        sidebarPanel.add(billsButton);
     }
 
     private void addLogoutButtonToSidebar() {
@@ -134,17 +139,20 @@ public class DashBoardForm extends JFrame {
     }
 
     private void addContentCards() throws SQLException {
-        JPanel homePanel = createSimpleContentCard("Welcome to Home Page");
-        JPanel productsPanel = new ProductManagementView();
-        JPanel ordersPanel = createSimpleContentCard("Order Management Panel");
+        JPanel homePanel = new HomeView();
+        JPanel productsManagementPanel = new ProductManagementView();
+        JPanel orderPanel = new OrderView();
         JPanel statsPanel = new StatisticView();
         JPanel staffPanel = new StaffManagenmentView();
+        JPanel billsPanel = new BillListView();
+
 
         contentPanel.add(homePanel, "HOME");
-        contentPanel.add(productsPanel, "PRODUCTS");
-        contentPanel.add(ordersPanel, "ORDERS");
+        contentPanel.add(productsManagementPanel, "PRODUCTS");
+        contentPanel.add(orderPanel, "ORDERS");
         contentPanel.add(statsPanel, "STATS");
         contentPanel.add(staffPanel, "STAFF");
+        contentPanel.add(billsPanel, "BILLS");
     }
 
     private JPanel createSimpleContentCard(String labelText) {

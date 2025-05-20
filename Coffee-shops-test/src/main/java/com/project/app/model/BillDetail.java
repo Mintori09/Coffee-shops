@@ -4,8 +4,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class BillDetail {
+    private int billDetailId;
     private int billId;
-    private String drinkId;
+    private int drinkId;
     private int quantity;
     private Double price;
     private String notes;
@@ -14,7 +15,8 @@ public class BillDetail {
     public BillDetail() {
     }
 
-    public BillDetail(int billId, String drinkId, int quantity, Double price, String notes, LocalDateTime createdDate) {
+    public BillDetail(int billDetailId, int billId, int drinkId, int quantity, Double price, String notes, LocalDateTime createdDate) {
+        this.billDetailId = billDetailId;
         this.billId = billId;
         this.drinkId = drinkId;
         this.quantity = quantity;
@@ -22,6 +24,17 @@ public class BillDetail {
         this.notes = notes;
         this.createdDate = createdDate;
     }
+
+    public int getBillDetailId() {
+        return billDetailId;
+    }
+
+    public void setBillDetailId(int billDetailId) {
+        this.billDetailId = billDetailId;
+    }
+
+
+
     public int getBillId() {
         return billId;
     }
@@ -30,11 +43,11 @@ public class BillDetail {
         this.billId = billId;
     }
 
-    public String getDrinkId() {
+    public int getDrinkId() {
         return drinkId;
     }
 
-    public void setDrinkId(String drinkId) {
+    public void setDrinkId(int drinkId) {
         this.drinkId = drinkId;
     }
 

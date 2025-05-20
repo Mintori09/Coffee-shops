@@ -54,6 +54,28 @@ public class EmployeeDAOImpl implements EmployeeDAO {
         return null;
     }
 
+    public Employee findByIdAccount(int id) {
+        String sql = "SELECT * FROM employees WHERE account_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Employee emp = new Employee();
+                emp.setId(rs.getInt("id"));
+                emp.setFullName(rs.getString("full_name"));
+                emp.setDateOfBirth(rs.getObject("date_of_birth", java.time.LocalDate.class));
+                emp.setGender(rs.getString("gender"));
+                emp.setPhoneNumber(rs.getString("phone_number"));
+                emp.setHireDate(rs.getObject("hire_date", java.time.LocalDateTime.class));
+                return emp;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     @Override
     public boolean create(Employee emp) {
         String sql = "INSERT INTO employees (id, full_name, date_of_birth, gender, phone_number,  hire_date) VALUES (?, ?, ?, ?, ?, ?, ?)";

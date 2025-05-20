@@ -11,4 +11,6 @@ public interface EmployeeDAO {
     boolean delete(int id);
 
     List<Object[]> getAllStaffDetails();
+
+    Employee findByIdAccount(int accountId);
 }

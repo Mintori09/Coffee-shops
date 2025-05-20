@@ -22,7 +22,7 @@ public class SideBarForm extends JPanel {
         usernameLabel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 30));
         usernameLabel.setHorizontalAlignment(SwingConstants.LEFT);
 
-        JLabel userLabel = new JLabel("User: " + username);
+        JLabel userLabel = new JLabel("" + username);
         userLabel.setFont(new Font("Inter", Font.BOLD, 12));
         userLabel.setForeground(Color.BLACK);
         userLabel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 30));
