@@ -5,6 +5,7 @@ import com.project.app.model.Account;
 import java.sql.SQLException;
 
 public interface AccountDAO {
-    public Account findById();
-    public  Account findByUsername(String username) throws SQLException;
+    public boolean create(Account account);
+    public Account findById(int id);
+    public Account findByUsername(String username) throws SQLException;
 }

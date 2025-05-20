@@ -99,7 +99,7 @@ public class StaffManagenmentView extends JPanel {
         model.setRowCount(0);
         EmployeeDAO employeeDAO = null;
         try {
-            employeeDAO = new EmployeeDAOImpl(DatabaseConnection.getConnection());
+            employeeDAO = new EmployeeDAOImpl();
             java.util.List<Employee> employees = employeeDAO.getAllEmployees();
             for (Employee emp : employees) {
                 model.addRow(new Object[]{

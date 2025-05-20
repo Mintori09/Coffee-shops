@@ -1,21 +1,21 @@
 package com.project.app.model;
 
 public class DrinkCategory {
-    private String drinkCategoryId;
+    private int drinkCategoryId;
     private String drinkCategoryName;
 
     public DrinkCategory() {
     }
-    public DrinkCategory(String drinkCategoryId, String drinkCategoryName) {
+    public DrinkCategory(int drinkCategoryId, String drinkCategoryName) {
         this.drinkCategoryId = drinkCategoryId;
         this.drinkCategoryName = drinkCategoryName;
     }
 
-    public String getFoodCategoryId() {
+    public int getFoodCategoryId() {
         return drinkCategoryId;
     }
 
-    public void setFoodCategoryId(String drinkCategoryId) {
+    public void setFoodCategoryId(int drinkCategoryId) {
         this.drinkCategoryId = drinkCategoryId;
     }
 

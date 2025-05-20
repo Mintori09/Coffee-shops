@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Bill {
-    private String billId;
+    private int billId;
     private LocalDate orderDate;
     private Double totalPrice;
     private String notes;
@@ -15,7 +15,7 @@ public class Bill {
     public Bill() {
     }
 
-    public Bill(String billId, LocalDate orderDate, Double totalPrice, String notes, LocalDateTime createdDate, String employeeId) {
+    public Bill(int billId, LocalDate orderDate, Double totalPrice, String notes, LocalDateTime createdDate, String employeeId) {
         this.billId = billId;
         this.orderDate = orderDate;
         this.totalPrice = totalPrice;
@@ -24,11 +24,11 @@ public class Bill {
         this.employeeId = employeeId;
     }
 
-    public String getBillId() {
+    public int getBillId() {
         return billId;
     }
 
-    public void setBillId(String billId) {
+    public void setBillId(int billId) {
         this.billId = billId;
     }
 

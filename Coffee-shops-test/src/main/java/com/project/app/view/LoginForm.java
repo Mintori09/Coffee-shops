@@ -150,6 +150,13 @@ public class LoginForm extends JFrame implements ActionListener, FocusListener {
         pf.setForeground(COLOR_TEXT);
         pf.setBorder(compoundBorder(BORDER_DEFAULT));
         pf.addFocusListener(this);
+        pf.addActionListener(e -> {
+            try {
+                handleLogin();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         return pf;
     }
 
@@ -186,11 +193,11 @@ public class LoginForm extends JFrame implements ActionListener, FocusListener {
         passwordField.setBorder(compoundBorder(BORDER_DEFAULT));
     }
 
-    private void handleLogin() throws InterruptedException, SQLException {
+    private void handleLogin() throws SQLException {
         String user = userTextField.getText().trim();
         String pass = new String(passwordField.getPassword()).trim();
         resetBorders();
-    
+
         if (user.isEmpty() || pass.isEmpty()) {
             showMessage("Vui lòng nhập tên đăng nhập và mật khẩu.", COLOR_ERROR);
             highlightFields(user.isEmpty(), pass.isEmpty());
@@ -199,13 +206,13 @@ public class LoginForm extends JFrame implements ActionListener, FocusListener {
             if (account != null) {
                 Session.getInstance().setAccount(account);
                 showMessage("Đăng nhập thành công!", new Color(34, 139, 34));
-    
+
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-               setSize(700, 1000);
+                setSize(700, 1000);
                 DashBoardForm dashboard = new DashBoardForm();
                 dashboard.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 dashboard.setSize(900, 600);
@@ -220,13 +227,12 @@ public class LoginForm extends JFrame implements ActionListener, FocusListener {
             }
         }
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == loginButton) {
             try {
                 handleLogin();
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }

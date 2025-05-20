@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Employee {
-    private String id;
+    private int id;
     private String fullName;
     private LocalDate dateOfBirth;
     private String gender;
@@ -13,7 +13,7 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(String id, String fullName, LocalDate dateOfBirth, String gender, String phoneNumber,  LocalDateTime hireDate) {
+    public Employee(int id, String fullName, LocalDate dateOfBirth, String gender, String phoneNumber,  LocalDateTime hireDate) {
         this.id = id;
         this.fullName = fullName;
         this.dateOfBirth = dateOfBirth;
@@ -72,11 +72,11 @@ public class Employee {
         this.fullName = fullName;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String i) {
+    public void setId(int i) {
         this.id = i;
     }
 

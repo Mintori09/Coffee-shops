@@ -11,10 +11,14 @@ import java.sql.SQLException;
 
 public class AccountDAOImpl implements AccountDAO {
     @Override
-    public Account findById() {
-        return null;
+    public boolean create(Account account) {
+        return false;
     }
 
+    @Override
+    public Account findById(int id) {
+        return null;
+    }
     @Override
     public Account findByUsername(String username) throws SQLException {
         String sql = "select * from accounts where username=?";

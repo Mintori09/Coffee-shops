@@ -3,7 +3,7 @@ package com.project.app.model;
 import java.time.LocalDateTime;
 
 public class Drink {
-    private String drinkId;
+    private int drinkId;
     private String drinkName;
     private String drinkCategoryId;
     private Double price;
@@ -14,7 +14,7 @@ public class Drink {
     public Drink() {
     }
 
-    public Drink(String drinkId, String drinkName, String drinkCategoryId, Double price, String description, String image, LocalDateTime createdDate) {
+    public Drink(int drinkId, String drinkName, String drinkCategoryId, Double price, String description, String image, LocalDateTime createdDate) {
         this.drinkId = drinkId;
         this.drinkName = drinkName;
         this.drinkCategoryId = drinkCategoryId;
@@ -24,11 +24,11 @@ public class Drink {
         this.createdDate = createdDate;
     }
 
-    public String getFoodId() {
+    public int getFoodId() {
         return drinkId;
     }
 
-    public void setFoodId(String drinkId) {
+    public void setFoodId(int drinkId) {
         this.drinkId = drinkId;
     }
 
