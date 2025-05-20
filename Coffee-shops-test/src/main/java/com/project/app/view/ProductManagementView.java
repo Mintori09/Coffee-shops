@@ -179,11 +179,11 @@ public class ProductManagementView extends JPanel {
                 // Format the information for the popup
                 String productInfo = String.format(
                         "Product Details:\n" +
-                        "ID: %s\n" +
-                        "Name: %s\n" +
-                        "Category: %s\n" +
-                        "Price: %.2f\n" +
-                        "Available: %s",
+                                "ID: %s\n" +
+                                "Name: %s\n" +
+                                "Category: %s\n" +
+                                "Price: %.2f\n" +
+                                "Available: %s",
                         id, name, category, (Double) price, availability
                 );
 
@@ -289,7 +289,8 @@ public class ProductManagementView extends JPanel {
         // Use the system look and feel
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+                 UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
 

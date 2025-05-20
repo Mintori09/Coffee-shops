@@ -197,3 +197,4 @@ public class ProductView extends JPanel {
         });
     }
 }
+//</editor-fold>
