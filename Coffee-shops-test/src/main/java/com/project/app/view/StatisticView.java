@@ -2,6 +2,7 @@ package com.project.app.view;
 
 import javax.swing.*;
 import java.awt.*;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -10,7 +11,10 @@ import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
+
 import javax.swing.border.CompoundBorder;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * StatisticView class displays various statistics and reports for the coffee shop.
@@ -18,21 +22,25 @@ import javax.swing.border.CompoundBorder;
  */
 public class StatisticView extends JPanel {
 
-    // Colors used in the view
     private static final Color BACKGROUND_COLOR = Color.decode("#F5F5F5");
+
+    private Map<String, Number> profitData;
+    private Map<String, Number> revenueData;
+    private Map<String, Number> orderData;
+
+    private String totalRevenue;
+    private String totalOrders;
+    private String totalProfit;
+
     private static final Color DEEP_TEAL = Color.decode("#008080");
     private static final Color CREAM = Color.decode("#FFF8E1");
     private static final Color DARK_BROWN = Color.decode("#4E342E");
     private static final Color LIGHT_BROWN = Color.decode("#D7CCC8");
 
-    /**
-     * Constructs a new StatisticView.
-     */
     public StatisticView() {
         setLayout(new BorderLayout());
         setBackground(BACKGROUND_COLOR);
 
-        // Initialize and add components
         add(createHeaderPanel(), BorderLayout.NORTH);
         add(createContentPanel(), BorderLayout.CENTER);
 //        add(createExportPanel(), BorderLayout.SOUTH);
@@ -87,6 +95,90 @@ public class StatisticView extends JPanel {
         return filterPanel;
     }
 
+    private void updateInformation(int days) {
+        // TODO: Replace mock data with actual query based on 'days'
+
+        Map<String, Number> profitData = new HashMap<>();
+        Map<String, Number> revenueData = new HashMap<>();
+        Map<String, Number> orderData = new HashMap<>();
+
+        if (days == 1) {
+            profitData.put("Today", 150);
+            revenueData.put("Today", 600);
+            orderData.put("Coffee", 20);
+            orderData.put("Pastries", 10);
+        } else if (days == 7) {
+            profitData.put("Mon", 120);
+            profitData.put("Tue", 180);
+            profitData.put("Wed", 150);
+            profitData.put("Thu", 200);
+            profitData.put("Fri", 220);
+            profitData.put("Sat", 280);
+            profitData.put("Sun", 250);
+
+            revenueData.put("Mon", 550);
+            revenueData.put("Tue", 650);
+            revenueData.put("Wed", 600);
+            revenueData.put("Thu", 750);
+            revenueData.put("Fri", 800);
+            revenueData.put("Sat", 850);
+            revenueData.put("Sun", 820);
+
+            orderData.put("Coffee", 45);
+            orderData.put("Pastries", 25);
+            orderData.put("Sandwiches", 25);
+            orderData.put("Drinks", 5);
+        } else if (days == 30) {
+            // Giả lập tháng này
+            // Bạn có thể gom nhóm theo tuần hoặc ngày
+            revenueData.put("Week 1", 1500);
+            revenueData.put("Week 2", 1800);
+            revenueData.put("Week 3", 1600);
+            revenueData.put("Week 4", 2000);
+
+            profitData.put("Week 1", 500);
+            profitData.put("Week 2", 550);
+            profitData.put("Week 3", 520);
+            profitData.put("Week 4", 600);
+
+            orderData.put("Coffee", 160);
+            orderData.put("Pastries", 100);
+            orderData.put("Sandwiches", 90);
+            orderData.put("Drinks", 40);
+        } else if (days == 60) {
+            // Giả lập tháng trước
+            revenueData.put("Week 1", 1400);
+            revenueData.put("Week 2", 1700);
+            revenueData.put("Week 3", 1500);
+            revenueData.put("Week 4", 1900);
+
+            profitData.put("Week 1", 450);
+            profitData.put("Week 2", 500);
+            profitData.put("Week 3", 480);
+            profitData.put("Week 4", 570);
+
+            orderData.put("Coffee", 150);
+            orderData.put("Pastries", 80);
+            orderData.put("Sandwiches", 85);
+            orderData.put("Drinks", 35);
+        }
+
+        // Tổng kết mô phỏng
+        String totalRevenue = "$2,500";
+        String totalOrders = "200";
+        String totalProfit = "$800";
+
+        // Cập nhật giao diện thống kê
+        updateStatistics(
+                profitData,
+                revenueData,
+                orderData,
+                totalRevenue,
+                totalOrders,
+                totalProfit
+        );
+    }
+
     /**
      * Creates a styled button for filtering.
      *
@@ -104,10 +196,19 @@ public class StatisticView extends JPanel {
                 BorderFactory.createEmptyBorder(8, 15, 8, 15)
         ));
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        // Add rounded corners (requires custom painting or a look and feel)
-        // For simplicity, we'll skip true corners with standard Swing buttons
+        int days = switch (text) {
+            case "Today" -> 1;
+            case "Last 7 Days" -> 7;
+            case "This Month" -> 30;
+            case "Last Month" -> 60;
+            default -> 0;
+        };
+        button.addActionListener(e -> {
+            updateInformation(days);
+        });
         return button;
     }
+
 
     /**
      * Creates the panel containing summary cards, graphs, and detailed panels.
@@ -134,9 +235,9 @@ public class StatisticView extends JPanel {
         JPanel summaryPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         summaryPanel.setOpaque(false);
 
-        summaryPanel.add(createSummaryCard("Total Revenue", "$1,899", "+8.2%"));
-        summaryPanel.add(createSummaryCard("Total Orders", "150", "+5.1%"));
-        summaryPanel.add(createSummaryCard("Total Profit", "$650", "+12.5%"));
+        summaryPanel.add(createSummaryCard("Total Revenue", this.totalRevenue, "")); // Comparison can be made dynamic later
+        summaryPanel.add(createSummaryCard("Total Orders", this.totalOrders, "")); // Comparison can be made dynamic later
+        summaryPanel.add(createSummaryCard("Total Profit", this.totalProfit, "")); // Comparison can be made dynamic later
 
         return summaryPanel;
     }
@@ -233,7 +334,7 @@ public class StatisticView extends JPanel {
      * @return The JPanel for the Profit over Time chart.
      */
     private JPanel createProfitOverTimeChartPanel() {
-        CategoryDataset dataset = createProfitOverTimeDataset();
+        CategoryDataset dataset = createProfitOverTimeDataset(this.profitData);
         JFreeChart chart = createProfitOverTimeChart(dataset);
         return createChartPanel("Profit over Time (Area Chart)", chart);
     }
@@ -241,17 +342,16 @@ public class StatisticView extends JPanel {
     /**
      * Creates the dataset for the Profit over Time chart.
      *
+     * @param profitData A map where keys are categories (e.g., days) and values are profit amounts.
      * @return The CategoryDataset for profit over time.
      */
-    private CategoryDataset createProfitOverTimeDataset() {
+    private CategoryDataset createProfitOverTimeDataset(java.util.Map<String, Number> profitData) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        dataset.addValue(100, "Profit", "Mon");
-        dataset.addValue(150, "Profit", "Tue");
-        dataset.addValue(120, "Profit", "Wed");
-        dataset.addValue(180, "Profit", "Thu");
-        dataset.addValue(200, "Profit", "Fri");
-        dataset.addValue(250, "Profit", "Sat");
-        dataset.addValue(220, "Profit", "Sun");
+        if (profitData != null) {
+            for (java.util.Map.Entry<String, Number> entry : profitData.entrySet()) {
+                dataset.addValue(entry.getValue(), "Profit", entry.getKey());
+            }
+        }
         return dataset;
     }
 
@@ -281,7 +381,7 @@ public class StatisticView extends JPanel {
      * @return The JPanel for the Revenue Trend chart.
      */
     private JPanel createRevenueTrendChartPanel() {
-        CategoryDataset dataset = createRevenueTrendDataset();
+        CategoryDataset dataset = createRevenueTrendDataset(this.revenueData);
         JFreeChart chart = createRevenueTrendChart(dataset);
         return createChartPanel("Revenue Trend (Line Chart)", chart);
     }
@@ -289,17 +389,16 @@ public class StatisticView extends JPanel {
     /**
      * Creates the dataset for the Revenue Trend chart.
      *
+     * @param revenueData A map where keys are categories (e.g., days) and values are revenue amounts.
      * @return The CategoryDataset for revenue trend.
      */
-    private CategoryDataset createRevenueTrendDataset() {
+    private CategoryDataset createRevenueTrendDataset(java.util.Map<String, Number> revenueData) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        dataset.addValue(500, "Revenue", "Mon");
-        dataset.addValue(600, "Revenue", "Tue");
-        dataset.addValue(550, "Revenue", "Wed");
-        dataset.addValue(700, "Revenue", "Thu");
-        dataset.addValue(750, "Revenue", "Fri");
-        dataset.addValue(800, "Revenue", "Sat");
-        dataset.addValue(780, "Revenue", "Sun");
+        if (revenueData != null) {
+            for (java.util.Map.Entry<String, Number> entry : revenueData.entrySet()) {
+                dataset.addValue(entry.getValue(), "Revenue", entry.getKey());
+            }
+        }
         return dataset;
     }
 
@@ -329,7 +428,7 @@ public class StatisticView extends JPanel {
      * @return The JPanel for the Order Distribution chart.
      */
     private JPanel createOrderDistributionChartPanel() {
-        PieDataset dataset = createOrderDistributionDataset();
+        PieDataset dataset = createOrderDistributionDataset(this.orderData);
         JFreeChart chart = createOrderDistributionChart(dataset);
         return createChartPanel("Order Distribution (Pie Chart)", chart);
     }
@@ -337,14 +436,16 @@ public class StatisticView extends JPanel {
     /**
      * Creates the dataset for the Order Distribution chart.
      *
+     * @param orderData A map where keys are item names and values are quantities or percentages.
      * @return The PieDataset for order distribution.
      */
-    private PieDataset createOrderDistributionDataset() {
+    private PieDataset createOrderDistributionDataset(java.util.Map<String, Number> orderData) {
         DefaultPieDataset dataset = new DefaultPieDataset();
-        dataset.setValue("Coffee", 40);
-        dataset.setValue("Pastries", 30);
-        dataset.setValue("Sandwiches", 20);
-        dataset.setValue("Drinks", 10);
+        if (orderData != null) {
+            for (java.util.Map.Entry<String, Number> entry : orderData.entrySet()) {
+                dataset.setValue(entry.getKey(), entry.getValue());
+            }
+        }
         return dataset;
     }
 
@@ -375,46 +476,9 @@ public class StatisticView extends JPanel {
         detailedPanels.setOpaque(false);
         detailedPanels.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20)); // Add padding
 
-        detailedPanels.add(createDetailedPanel("Best-Selling Products"));
-        detailedPanels.add(createDetailedPanel("Revenue by Product"));
-        detailedPanels.add(createDetailedPanel("Revenue by Staff"));
-
         return detailedPanels;
     }
 
-    /**
-     * Creates a generic panel for detailed content (e.g., tables, lists).
-     *
-     * @param title The title of the detailed panel.
-     * @return The JPanel for detailed content.
-     */
-    private JPanel createDetailedPanel(String title) {
-        JPanel detailedPanel = new JPanel(new BorderLayout());
-        detailedPanel.setBackground(Color.WHITE);
-        detailedPanel.setBorder(createStandardBorder());
-        // Add rounded corners (requires custom painting or a look and feel)
-        // For simplicity, we'll skip true rounded corners with standard Swing panels
-
-        JLabel titleLabel = new JLabel(title, SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        detailedPanel.add(titleLabel, BorderLayout.NORTH);
-
-        // Placeholder for detailed content (e.g., table, list)
-        JTextArea contentPlaceholder = new JTextArea("Placeholder for " + title);
-        contentPlaceholder.setEditable(false);
-        contentPlaceholder.setLineWrap(true);
-        contentPlaceholder.setWrapStyleWord(true);
-        contentPlaceholder.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        detailedPanel.add(new JScrollPane(contentPlaceholder), BorderLayout.CENTER); // Use JScrollPane for potential scrolling
-
-        return detailedPanel;
-    }
-
-    /**
-     * Creates the panel containing the export button.
-     *
-     * @return The export JPanel.
-     */
     private JPanel createExportPanel() {
         JPanel exportPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 20));
         exportPanel.setOpaque(false);
@@ -451,6 +515,39 @@ public class StatisticView extends JPanel {
     }
 
     /**
+     * Updates the statistics displayed in the view.
+     *
+     * @param profitData   A map where keys are categories (e.g., days) and values are profit amounts.
+     * @param revenueData  A map where keys are categories (e.g., days) and values are revenue amounts.
+     * @param orderData    A map where keys are item names and values are quantities or percentages.
+     * @param totalRevenue The total revenue string.
+     * @param totalOrders  The total orders string.
+     * @param totalProfit  The total profit string.
+     */
+    public void updateStatistics(Map<String, Number> profitData, Map<String, Number> revenueData, Map<String, Number> orderData, String totalRevenue, String totalOrders, String totalProfit) {
+        this.profitData = profitData;
+        this.revenueData = revenueData;
+        this.orderData = orderData;
+        this.totalRevenue = totalRevenue;
+        this.totalOrders = totalOrders;
+        this.totalProfit = totalProfit;
+
+        // Refresh the charts and summary panels
+        // This is a simplified approach; a more robust solution might update existing charts
+        // instead of recreating panels. However, for this task, recreating is sufficient
+        // to demonstrate passing data.
+        removeAll();
+        setLayout(new BorderLayout());
+        setBackground(BACKGROUND_COLOR);
+
+        add(createHeaderPanel(), BorderLayout.NORTH);
+        add(createContentPanel(), BorderLayout.CENTER);
+        revalidate();
+        repaint();
+    }
+
+
+    /**
      * Main method to create and display the StatisticView in a JFrame.
      *
      * @param args Command line arguments (not used).
@@ -458,7 +555,42 @@ public class StatisticView extends JPanel {
     public static void main(String[] args) {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().add(new StatisticView());
+        StatisticView statisticView = new StatisticView();
+
+        // Example usage of updateStatistics with sample data
+        Map<String, Number> sampleProfitData = new HashMap<>();
+        sampleProfitData.put("Mon", 120);
+        sampleProfitData.put("Tue", 180);
+        sampleProfitData.put("Wed", 150);
+        sampleProfitData.put("Thu", 200);
+        sampleProfitData.put("Fri", 220);
+        sampleProfitData.put("Sat", 280);
+        sampleProfitData.put("Sun", 250);
+
+        Map<String, Number> sampleRevenueData = new HashMap<>();
+        sampleRevenueData.put("Mon", 550);
+        sampleRevenueData.put("Tue", 650);
+        sampleRevenueData.put("Wed", 600);
+        sampleRevenueData.put("Thu", 750);
+        sampleRevenueData.put("Fri", 800);
+        sampleRevenueData.put("Sat", 850);
+        sampleRevenueData.put("Sun", 820);
+
+        Map<String, Number> sampleOrderData = new HashMap<>();
+        sampleOrderData.put("Coffee", 45);
+        sampleOrderData.put("Pastries", 25);
+        sampleOrderData.put("Sandwiches", 25);
+        sampleOrderData.put("Drinks", 5);
+
+        // Example summary data
+        String sampleTotalRevenue = "$2,500";
+        String sampleTotalOrders = "200";
+        String sampleTotalProfit = "$800";
+
+        statisticView.updateStatistics(sampleProfitData, sampleRevenueData, sampleOrderData, sampleTotalRevenue, sampleTotalOrders, sampleTotalProfit);
+
+
+        frame.getContentPane().add(statisticView);
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);

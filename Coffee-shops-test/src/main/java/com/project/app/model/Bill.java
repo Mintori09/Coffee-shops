@@ -10,12 +10,12 @@ public class Bill {
     private Double totalPrice;
     private String notes;
     private LocalDateTime createdDate;
-    private String employeeId;
+    private int employeeId;
 
     public Bill() {
     }
 
-    public Bill(int billId, LocalDate orderDate, Double totalPrice, String notes, LocalDateTime createdDate, String employeeId) {
+    public Bill(int billId, LocalDate orderDate, Double totalPrice, String notes, LocalDateTime createdDate, int employeeId) {
         this.billId = billId;
         this.orderDate = orderDate;
         this.totalPrice = totalPrice;
@@ -64,11 +64,11 @@ public class Bill {
         this.createdDate = createdDate;
     }
 
-    public String getEmployeeId() {
+    public int getEmployeeId() {
         return employeeId;
     }
 
-    public void setEmployeeId(String employeeId) {
+    public void setEmployeeId(int employeeId) {
         this.employeeId = employeeId;
     }
 }
