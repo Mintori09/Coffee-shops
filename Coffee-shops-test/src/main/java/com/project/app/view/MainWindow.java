@@ -150,7 +150,7 @@ public class MainWindow extends JFrame {
         sidebarPanel.add(homeButton);
         sidebarPanel.add(Box.createVerticalStrut(VERTICAL_STRUT_SMALL));
 
-        if (Session.getInstance().getAccount().getRole().equals("admin")) {
+        if (Session.getInstance().getAccount().getRole().equalsIgnoreCase("admin")) {
             sidebarPanel.add(statsButton);
             sidebarPanel.add(Box.createVerticalStrut(VERTICAL_STRUT_SMALL));
             sidebarPanel.add(productsButton);

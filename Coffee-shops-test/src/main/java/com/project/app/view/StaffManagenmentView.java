@@ -1,70 +1,38 @@
 package com.project.app.view;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.*;
+import java.time.LocalDate;
+import java.sql.Connection;
 
+import com.project.app.dao.AccountDAO;
 import com.project.app.dao.EmployeeDAO;
+import com.project.app.dao.impl.AccountDAOImpl;
 import com.project.app.dao.impl.EmployeeDAOImpl;
-import com.project.app.database.*;
+import com.project.app.database.DatabaseConnection;
+import com.project.app.model.Account;
 import com.project.app.model.Employee;
+import com.project.app.view.Component.StaffInputSidebar;
 
 public class StaffManagenmentView extends JPanel {
-    private static final long serialVersionUID = 1L;
-    private JTextField txtName, txtUsername, txtRole;
-    private JPasswordField txtPassword;
     private JTable staffTable;
-    private JButton btnAdd, btnUpdate, btnDelete, btnClear;
+    private StaffInputSidebar staffInputSidebar;
+    private boolean isAddingStaff;
+    private int selectedEmployeeId;
 
     public StaffManagenmentView() {
         setLayout(new BorderLayout(10, 10));
         setBackground(new Color(245, 235, 220));
-        JPanel infoPanel = new JPanel();
-        infoPanel.setBackground(new Color(245, 235, 220));
-        infoPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(new Color(160, 82, 45)),
-                "Staff Details",
-                TitledBorder.LEFT, TitledBorder.TOP,
-                new Font("Sans Serif", Font.BOLD, 18),
-                new Color(160, 82, 45)
-        ));
 
-        infoPanel.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 8, 8, 8);
-        gbc.anchor = GridBagConstraints.WEST;
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        infoPanel.add(new JLabel("Name:"), gbc);
-        gbc.gridx = 1;
-        txtName = new JTextField(18);
-        infoPanel.add(txtName, gbc);
-
-        gbc.gridx = 2;
-        infoPanel.add(new JLabel("Username:"), gbc);
-        gbc.gridx = 3;
-        txtUsername = new JTextField(15);
-        infoPanel.add(txtUsername, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        infoPanel.add(new JLabel("Password:"), gbc);
-        gbc.gridx = 1;
-        txtPassword = new JPasswordField(18);
-        infoPanel.add(txtPassword, gbc);
-
-        gbc.gridx = 2;
-        infoPanel.add(new JLabel("Role:"), gbc);
-        gbc.gridx = 3;
-        txtRole = new JTextField(15);
-        infoPanel.add(txtRole, gbc);
-        add(infoPanel, BorderLayout.NORTH);
-
-        staffTable = new JTable(new DefaultTableModel(
-                new Object[]{"Employee ID", "Full Name", "Username", "Role", "Hire Date"}, 0
-        ));
+        DefaultTableModel model = new DefaultTableModel(new Object[]{"Employee ID", "Full Name", "Username", "Role", "Hire Date"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        staffTable = new JTable(model);
         staffTable.getTableHeader().setFont(new Font("Sans Serif", Font.BOLD, 14));
         staffTable.getTableHeader().setBackground(new Color(160, 82, 45));
         staffTable.getTableHeader().setForeground(Color.WHITE);
@@ -77,32 +45,57 @@ public class StaffManagenmentView extends JPanel {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(new Color(245, 235, 220));
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        btnAdd = createButton("Add", "\u2795", new Color(139, 69, 19));
-        btnUpdate = createButton("Update", "\u270E", new Color(205, 133, 63));
-        btnDelete = createButton("Delete", "\u1F5D1", new Color(205, 92, 92));
-        btnClear = createButton("Clear", "\u274C", new Color(160, 82, 45));
+        JButton btnAdd = createButton("Add", "\u2795", new Color(139, 69, 19));
+        JButton btnUpdate = createButton("Update", "\u270E", new Color(205, 133, 63));
+        JButton btnDelete = createButton("Delete", "\u1F5D1", new Color(205, 92, 92));
+        JButton btnClear = createButton("Clear", "\u274C", new Color(160, 82, 45));
         buttonPanel.add(btnAdd);
         buttonPanel.add(btnUpdate);
         buttonPanel.add(btnDelete);
         buttonPanel.add(btnClear);
         add(buttonPanel, BorderLayout.SOUTH);
-        btnAdd.addActionListener(e -> addStaff());
-        btnUpdate.addActionListener(e -> updateStaff());
+
+        staffInputSidebar = new StaffInputSidebar();
+        staffInputSidebar.setVisible(false);
+        add(staffInputSidebar, BorderLayout.EAST);
+
+        btnAdd.addActionListener(e -> {
+            isAddingStaff = true;
+            staffInputSidebar.clearFields();
+            staffInputSidebar.setVisible(true);
+        });
+        btnUpdate.addActionListener(e -> {
+            int selectedRow = staffTable.getSelectedRow();
+            if (selectedRow != -1) {
+                isAddingStaff = false;
+                selectedEmployeeId = (int) staffTable.getModel().getValueAt(selectedRow, 0);
+                fillFieldsFromTable();
+                staffInputSidebar.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn nhân viên để cập nhật!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            }
+        });
         btnDelete.addActionListener(e -> deleteStaff());
-        btnClear.addActionListener(e -> clearFields());
-        staffTable.getSelectionModel().addListSelectionListener(e -> fillFieldsFromTable());
+        btnClear.addActionListener(e -> staffTable.clearSelection());
+
+        staffInputSidebar.addSaveButtonListener(e -> handleSaveStaff());
+        staffInputSidebar.addCancelButtonListener(e -> handleCancelStaff());
+
+        staffTable.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && staffTable.getSelectedRow() != -1) {
+                fillFieldsFromTable();
+            }
+        });
         loadDataToTable();
     }
 
     private void loadDataToTable() {
         DefaultTableModel model = (DefaultTableModel) staffTable.getModel();
         model.setRowCount(0);
-        // Assuming a DAO method exists to get combined Employee and Account data
-        // For demonstration, let's assume a method like getAllStaffDetails() exists
-        // and returns a list of objects with getEmployeeId(), getFullName(), getUsername(), getRole(), getHireDate()
-        EmployeeDAO employeeDAO = null;
+        // The model is already set in the constructor with overridden isCellEditable
+
         try {
-            employeeDAO = new EmployeeDAOImpl();
+            EmployeeDAO employeeDAO = new EmployeeDAOImpl();
             java.util.List<Object[]> staffDetails = employeeDAO.getAllStaffDetails();
             for (Object[] row : staffDetails) {
                 model.addRow(row);
@@ -113,54 +106,210 @@ public class StaffManagenmentView extends JPanel {
         }
     }
 
-    private void addStaff() {
-        // This method needs to be updated to handle adding both Employee and Account data
-        // This will likely involve calls to both EmployeeDAO and AccountDAO
-        JOptionPane.showMessageDialog(this, "Chức năng thêm nhân viên cần được triển khai để xử lý cả thông tin nhân viên và tài khoản.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-        clearFields();
+    private void fillFieldsFromTable() {
+        int selectedRow = staffTable.getSelectedRow();
+        if (selectedRow != -1) {
+            DefaultTableModel model = (DefaultTableModel) staffTable.getModel();
+            int employeeId = (int) model.getValueAt(selectedRow, 0);
+
+            try {
+                EmployeeDAO employeeDAO = new EmployeeDAOImpl();
+                AccountDAO accountDAO = new AccountDAOImpl();
+                Employee employee = employeeDAO.findById(employeeId);
+                Account account = accountDAO.findById(employee.getAccountId());
+
+                if (employee != null && account != null) {
+                    staffInputSidebar.setStaffData(employee.getFullName(), employee.getDateOfBirth(), employee.getGender(), employee.getPhoneNumber(), account.getUsername(), account.getRole());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Lỗi khi lấy dữ liệu nhân viên để hiển thị: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 
-    private void updateStaff() {
-        // This method needs to be updated to handle updating both Employee and Account data
-        // This will likely involve calls to both EmployeeDAO and AccountDAO
-        int selectedRow = staffTable.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn nhân viên để cập nhật!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+    private void handleSaveStaff() {
+        String name = staffInputSidebar.getStaffName();
+        LocalDate dateOfBirth = staffInputSidebar.getDateOfBirth();
+        String gender = staffInputSidebar.getGender();
+        String phoneNumber = staffInputSidebar.getPhoneNumber();
+        String username = staffInputSidebar.getUsername();
+        String password = staffInputSidebar.getPassword();
+        String role = staffInputSidebar.getRole();
+
+        if (name.isEmpty() || dateOfBirth == null || gender == null || phoneNumber.isEmpty() || username.isEmpty() || role == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin nhân viên!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        JOptionPane.showMessageDialog(this, "Chức năng cập nhật nhân viên cần được triển khai để xử lý cả thông tin nhân viên và tài khoản.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-        clearFields();
+
+        if (!phoneNumber.matches("\\d+")) {
+            JOptionPane.showMessageDialog(this, "Số điện thoại chỉ được chứa chữ số!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        Connection conn = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            conn.setAutoCommit(false);
+            AccountDAO accountDAO = new AccountDAOImpl();
+            EmployeeDAO employeeDAO = new EmployeeDAOImpl();
+
+            if (isAddingStaff) {
+                // Add new staff
+                if (accountDAO.findByUsername(username) != null) {
+                    JOptionPane.showMessageDialog(this, "Tên đăng nhập đã tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    conn.rollback();
+                    return;
+                }
+
+                Account account = new Account();
+                account.setUsername(username);
+                account.setPassword(com.project.app.util.PasswordUtil.hashPassword(password));
+                account.setRole(role);
+
+                int accountId = accountDAO.create(account);
+                if (accountId > 0) {
+                    Employee employee = new Employee();
+                    employee.setFullName(name);
+                    employee.setDateOfBirth(dateOfBirth);
+                    employee.setGender(gender);
+                    employee.setPhoneNumber(phoneNumber);
+                    employee.setAccountId(accountId);
+
+                    int employeeId = employeeDAO.create(employee);
+                    if (employeeId > 0) {
+                        conn.commit();
+                        JOptionPane.showMessageDialog(this, "Thêm nhân viên thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                        loadDataToTable();
+                        staffInputSidebar.setVisible(false);
+                    } else {
+                        accountDAO.deleteAccountById(accountId);
+                        conn.rollback();
+                        JOptionPane.showMessageDialog(this, "Thêm nhân viên thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    conn.rollback();
+                    JOptionPane.showMessageDialog(this, "Tạo tài khoản thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                Employee existingEmployee = employeeDAO.findById(selectedEmployeeId);
+                Account existingAccount = accountDAO.findById(existingEmployee.getAccountId());
+
+                if (!existingAccount.getUsername().equals(username)) {
+                    Account accountWithSameUsername = accountDAO.findByUsername(username);
+                    if (accountWithSameUsername != null && accountWithSameUsername.getId() != existingAccount.getId()) {
+                        JOptionPane.showMessageDialog(this, "Tên đăng nhập đã tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                        conn.rollback();
+                        return;
+                    }
+                }
+
+                existingEmployee.setFullName(name);
+                existingEmployee.setDateOfBirth(dateOfBirth);
+                existingEmployee.setGender(gender);
+                existingEmployee.setPhoneNumber(phoneNumber);
+                boolean employeeUpdated = employeeDAO.updateEmployee(existingEmployee);
+
+                existingAccount.setUsername(username);
+                if (!password.isEmpty()) {
+                    existingAccount.setPassword(com.project.app.util.PasswordUtil.hashPassword(password));
+                }
+                existingAccount.setRole(role);
+                boolean accountUpdated = accountDAO.updateAccount(existingAccount);
+
+                if (employeeUpdated && accountUpdated) {
+                    conn.commit();
+                    JOptionPane.showMessageDialog(this, "Cập nhật nhân viên thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    loadDataToTable();
+                    staffInputSidebar.setVisible(false);
+                } else {
+                    conn.rollback();
+                    JOptionPane.showMessageDialog(this, "Cập nhật nhân viên thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi khi lưu nhân viên: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void handleCancelStaff() {
+        staffInputSidebar.setVisible(false);
+        staffTable.clearSelection();
     }
 
     private void deleteStaff() {
-        // This method needs to be updated to handle deleting both Employee and Account data
-        // This will likely involve calls to both EmployeeDAO and AccountDAO
         int selectedRow = staffTable.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn nhân viên để xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        JOptionPane.showMessageDialog(this, "Chức năng xóa nhân viên cần được triển khai để xử lý cả thông tin nhân viên và tài khoản.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-        clearFields();
-    }
-
-    private void clearFields() {
-        txtName.setText("");
-        txtUsername.setText("");
-        txtPassword.setText(""); // Password field is still cleared, but not used for display
-        txtRole.setText("");
-        staffTable.clearSelection();
-    }
-
-    private void fillFieldsFromTable() {
-        int selectedRow = staffTable.getSelectedRow();
-        if (selectedRow != -1) {
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa nhân viên này?", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
             DefaultTableModel model = (DefaultTableModel) staffTable.getModel();
-            txtName.setText(model.getValueAt(selectedRow, 1).toString()); // Full Name
-            txtUsername.setText(model.getValueAt(selectedRow, 2).toString()); // Username
-            txtRole.setText(model.getValueAt(selectedRow, 3).toString()); // Role
+            int employeeId = (int) model.getValueAt(selectedRow, 0);
+            Connection conn = null;
+            try {
+                conn = DatabaseConnection.getConnection();
+                conn.setAutoCommit(false);
+                EmployeeDAO employeeDAO = new EmployeeDAOImpl();
+                AccountDAO accountDAO = new AccountDAOImpl();
 
-            txtPassword.setText(""); // Password is not displayed in the table
+                Employee existingEmployee = employeeDAO.findById(employeeId);
+                if (existingEmployee != null) {
+                    boolean employeeDeleted = employeeDAO.delete(employeeId);
+                    boolean accountDeleted = true;
+                    if (existingEmployee.getAccountId() > 0) {
+                        accountDeleted = accountDAO.deleteAccountById(existingEmployee.getAccountId());
+                    }
+
+                    if (employeeDeleted && accountDeleted) {
+                        conn.commit();
+                        JOptionPane.showMessageDialog(this, "Xóa nhân viên thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                        loadDataToTable();
+                    } else {
+                        conn.rollback();
+                        JOptionPane.showMessageDialog(this, "Xóa nhân viên thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Không tìm thấy nhân viên để xóa.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Lỗi khi xóa nhân viên: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                if (conn != null) {
+                    try {
+                        conn.rollback();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            } finally {
+                if (conn != null) {
+                    try {
+                        conn.setAutoCommit(true);
+                        conn.close();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
         }
     }
 
@@ -173,9 +322,5 @@ public class StaffManagenmentView extends JPanel {
         btn.setPreferredSize(new Dimension(120, 40));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         return btn;
-    }
-
-    public static void main(String[] args) {
-        new StaffManagenmentView().setVisible(true);
     }
 }

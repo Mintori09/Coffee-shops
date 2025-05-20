@@ -23,6 +23,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
                 emp.setGender(rs.getString("gender"));
                 emp.setPhoneNumber(rs.getString("phone_number"));
                 emp.setHireDate(rs.getObject("hire_date", java.time.LocalDateTime.class));
+                emp.setAccountId(rs.getInt("account_id"));
                 list.add(emp);
             }
         } catch (SQLException e) {
@@ -46,6 +47,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
                 emp.setGender(rs.getString("gender"));
                 emp.setPhoneNumber(rs.getString("phone_number"));
                 emp.setHireDate(rs.getObject("hire_date", java.time.LocalDateTime.class));
+                emp.setAccountId(rs.getInt("account_id"));
                 return emp;
             }
         } catch (SQLException e) {
@@ -68,6 +70,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
                 emp.setGender(rs.getString("gender"));
                 emp.setPhoneNumber(rs.getString("phone_number"));
                 emp.setHireDate(rs.getObject("hire_date", java.time.LocalDateTime.class));
+                emp.setAccountId(rs.getInt("account_id"));
                 return emp;
             }
         } catch (SQLException e) {
@@ -77,22 +80,27 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     }
 
     @Override
-    public boolean create(Employee emp) {
-        String sql = "INSERT INTO employees (id, full_name, date_of_birth, gender, phone_number, hire_date, account_id) VALUES (?, ?, ?, ?, ?, ?,?)";
+    public int create(Employee emp) {
+        String sql = "INSERT INTO employees (full_name, date_of_birth, gender, phone_number, hire_date, account_id) VALUES (?, ?, ?, ?, ?, ?)";
+        int generatedId = -1;
         try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, emp.getId());
-            ps.setString(2, emp.getFullName());
-            ps.setObject(3, emp.getDateOfBirth());
-            ps.setString(4, emp.getGender());
-            ps.setString(5, emp.getPhoneNumber());
-            ps.setObject(6, emp.getHireDate());
-            ps.setInt(7, emp.getAccountId());
-            return ps.executeUpdate() > 0;
+                PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, emp.getFullName());
+            ps.setObject(2, emp.getDateOfBirth());
+            ps.setString(3, emp.getGender());
+            ps.setString(4, emp.getPhoneNumber());
+            ps.setObject(5, emp.getHireDate());
+            ps.setInt(6, emp.getAccountId());
+            ps.executeUpdate();
+
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                generatedId = rs.getInt(1);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return generatedId;
     }
 
     @Override

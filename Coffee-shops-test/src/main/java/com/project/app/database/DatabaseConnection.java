@@ -12,19 +12,16 @@ public class DatabaseConnection {
     public static Connection connection;
 
     private DatabaseConnection() throws SQLException {
-        getConnection();
+        connection = getConnection();
     }
 
     public static Connection getConnection() throws SQLException {
-        if (connection == null || connection.isClosed()) {
-            try {
-                Class.forName("org.mariadb.jdbc.Driver");
-                connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            } catch (ClassNotFoundException e) {
-                throw new SQLException("SQL Server JDBC Driver not found", e);
-            }
+        try {
+            Class.forName("org.mariadb.jdbc.Driver");
+            return DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        } catch (ClassNotFoundException e) {
+            throw new SQLException("SQL Server JDBC Driver not found", e);
         }
-        return connection;
     }
 
     public static void closeConnection() throws SQLException {
