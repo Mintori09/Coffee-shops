@@ -186,30 +186,6 @@ public class LoginForm extends JFrame implements ActionListener, FocusListener {
         passwordField.setBorder(compoundBorder(BORDER_DEFAULT));
     }
 
-//    private void handleLogin() throws InterruptedException, SQLException {
-//        String user = userTextField.getText().trim();
-//        String pass = new String(passwordField.getPassword()).trim();
-//        resetBorders();
-//
-//        if (user.isEmpty() || pass.isEmpty()) {
-//            showMessage("Vui lòng nhập tên đăng nhập và mật khẩu.", COLOR_ERROR);
-//            highlightFields(user.isEmpty(), pass.isEmpty());
-//        } else if (authService.login(user, pass) != null) {
-//            Session.getInstance().setAccount(authService.login(user, pass));
-//            showMessage("Đăng nhập thành công!", new Color(34, 139, 34));
-//
-//            try {
-//                Thread.sleep(500);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            setResizable(true);
-//            this.setContentPane(new DashBoardForm().getMainPanel());
-//        } else {
-//            showMessage("Tên đăng nhập hoặc mật khẩu không đúng.", COLOR_ERROR);
-//            highlightFields(true, true);
-//        }
-//    }
     private void handleLogin() throws InterruptedException, SQLException {
         String user = userTextField.getText().trim();
         String pass = new String(passwordField.getPassword()).trim();
@@ -230,8 +206,13 @@ public class LoginForm extends JFrame implements ActionListener, FocusListener {
                     e.printStackTrace();
                 }
                setSize(700, 1000);
-           	 setResizable(true);
-        	 this.setContentPane(new DashBoardForm().getMainPanel());
+                DashBoardForm dashboard = new DashBoardForm();
+                dashboard.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                dashboard.setSize(900, 600);
+                dashboard.setLocationRelativeTo(null);
+                dashboard.setVisible(true);
+
+                this.dispose();
 
             } else {
                 showMessage("Tên đăng nhập hoặc mật khẩu không đúng.", COLOR_ERROR);

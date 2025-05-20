@@ -1,109 +1,153 @@
 package com.project.app.view;
 
-import org.jfree.data.statistics.Statistics;
+import com.project.app.view.Component.SideBarForm;
 
 import com.project.app.session.Session;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-public class DashBoardForm {
+public class DashBoardForm extends JFrame {
     private JPanel mainPanel;
     private JPanel sidebarPanel;
     private JPanel contentPanel;
     private CardLayout cardLayout;
 
     public DashBoardForm() {
+        super("Dashboard");
         mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBackground(new Color(250, 240, 230)); // Light beige background
-
+        mainPanel.setBackground(new Color(250, 240, 230));
         createSidebarPanel();
         createContentPanel();
 
+        mainPanel.add(new SideBarForm(), BorderLayout.NORTH);
         mainPanel.add(sidebarPanel, BorderLayout.WEST);
         mainPanel.add(contentPanel, BorderLayout.CENTER);
+
+        this.setContentPane(mainPanel);
+        this.setSize(900, 600);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setLocationRelativeTo(null);
     }
 
-    private JButton createSidebarButton(String text) {
-        JButton button = new JButton(text);
+    private JButton createSidebarButton(String buttonText) {
+        JButton button = new JButton(buttonText) {
+            private static final int CORNER_RADIUS = 15;
+
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                g2.setColor(getBackground());
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), CORNER_RADIUS, CORNER_RADIUS);
+
+                super.paintComponent(g);
+                g2.dispose();
+            }
+
+            @Override
+            protected void paintBorder(Graphics g) {
+            }
+        };
+
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button.setPreferredSize(new Dimension(150, 40));
+        button.setPreferredSize(new Dimension(100, 40));
         button.setMaximumSize(new Dimension(150, 40));
-        button.setBackground(new Color(200, 150, 100)); // Coffee brown
-        button.setForeground(Color.WHITE);
-        button.setFont(new Font("Sans Serif", Font.BOLD, 14));
+        button.setBackground(new Color(165, 42, 42));
+        button.setForeground(new Color(250, 245, 240));
+        button.setFont(new Font("Segoe UI", Font.BOLD, 14));
         button.setFocusPainted(false);
         button.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        button.setContentAreaFilled(false);
+        button.setOpaque(false);
+
         return button;
     }
 
     private void createSidebarPanel() {
         sidebarPanel = new JPanel();
         sidebarPanel.setLayout(new BoxLayout(sidebarPanel, BoxLayout.Y_AXIS));
-        sidebarPanel.setBackground(new Color(210, 180, 140)); // Tan color
-        sidebarPanel.setPreferredSize(new Dimension(200, 600));
+        sidebarPanel.setBackground(new Color(245, 235, 220));
+        sidebarPanel.setPreferredSize(new Dimension(170, 600));
+        sidebarPanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
 
+        addLogoToSidebar();
+        addNavigationButtonsToSidebar();
+        addLogoutButtonToSidebar();
+    }
+
+    private void addLogoToSidebar() {
+        ImageIcon logoIcon = new ImageIcon(getClass().getResource("/images/logo_icon.png"));
+        Image scaledImage = logoIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+        logoIcon = new ImageIcon(scaledImage);
+        JLabel logoLabel = new JLabel(logoIcon);
+        logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        logoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
+        sidebarPanel.add(logoLabel);
+        sidebarPanel.add(Box.createVerticalStrut(20));
+    }
+
+    private void addNavigationButtonsToSidebar() {
         JButton homeButton = createSidebarButton("Home");
         JButton productsButton = createSidebarButton("Products");
         JButton ordersButton = createSidebarButton("Orders");
         JButton statsButton = createSidebarButton("Statistics");
-        JButton LogOutButton = createSidebarButton("LogOut");
         JButton staffManagementButton = createSidebarButton("Staff");
 
-        // Add action listeners to switch content
-        homeButton.addActionListener(e -> cardLayout.show(contentPanel, "HOME"));
-        productsButton.addActionListener(e -> cardLayout.show(contentPanel, "PRODUCTS"));
-        ordersButton.addActionListener(e -> cardLayout.show(contentPanel, "ORDERS"));
-        statsButton.addActionListener(e -> cardLayout.show(contentPanel, "STATS"));
-        staffManagementButton.addActionListener(e -> cardLayout.show(contentPanel, "STAFF"));
-        sidebarPanel.add(Box.createVerticalStrut(20));
+        homeButton.addActionListener(e -> showContentPanel("HOME"));
+        productsButton.addActionListener(e -> showContentPanel("PRODUCTS"));
+        ordersButton.addActionListener(e -> showContentPanel("ORDERS"));
+        statsButton.addActionListener(e -> showContentPanel("STATS"));
+        staffManagementButton.addActionListener(e -> showContentPanel("STAFF"));
+
         sidebarPanel.add(homeButton);
-        
-        
-        if(Session.getInstance().getAccount().getRole().equals("admin"))
-        {
-        	sidebarPanel.add(Box.createVerticalStrut(10));
-        	sidebarPanel.add(statsButton);
-        	sidebarPanel.add(Box.createVerticalStrut(10));
+        sidebarPanel.add(Box.createVerticalStrut(15));
+
+        if (Session.getInstance().getAccount().getRole().equals("admin")) {
+            sidebarPanel.add(statsButton);
+            sidebarPanel.add(Box.createVerticalStrut(15));
             sidebarPanel.add(productsButton);
-            sidebarPanel.add(Box.createVerticalStrut(10));
-        	sidebarPanel.add(staffManagementButton);
-            
-        }
-        else {
-        	sidebarPanel.add(Box.createVerticalStrut(10));
+            sidebarPanel.add(Box.createVerticalStrut(15));
+            sidebarPanel.add(staffManagementButton);
+        } else {
             sidebarPanel.add(ordersButton);
         }
-        
-        sidebarPanel.add(Box.createVerticalStrut(10));
-        sidebarPanel.add(LogOutButton);
+    }
+
+    private void addLogoutButtonToSidebar() {
+        JButton logOutButton = createSidebarButton("LogOut");
+        logOutButton.addActionListener(e -> handleLogout());
+
+        sidebarPanel.add(Box.createVerticalGlue());
+        sidebarPanel.add(logOutButton);
+        sidebarPanel.add(Box.createVerticalStrut(20));
     }
 
     private void createContentPanel() {
         cardLayout = new CardLayout();
         contentPanel = new JPanel(cardLayout);
 
-        // Create dummy panels for each section
-        JPanel homePanel = createContentCard("Welcome to Home Page");
-        JPanel productsPanel = new ProductManagementView();
-        JPanel ordersPanel = createContentCard("Order Management Panel");
-        JPanel statsPanel = new StatisticView();
-        JPanel staffPanel = new StaffManagenmentView();  
-        
+        addContentCards();
 
-        // Add panels to contentPanel
+        showContentPanel("HOME");
+    }
+
+    private void addContentCards() {
+        JPanel homePanel = createSimpleContentCard("Welcome to Home Page");
+        JPanel productsPanel = new ProductManagementView();
+        JPanel ordersPanel = createSimpleContentCard("Order Management Panel");
+        JPanel statsPanel = new StatisticView();
+        JPanel staffPanel = new StaffManagenmentView();
+
         contentPanel.add(homePanel, "HOME");
         contentPanel.add(productsPanel, "PRODUCTS");
         contentPanel.add(ordersPanel, "ORDERS");
         contentPanel.add(statsPanel, "STATS");
         contentPanel.add(staffPanel, "STAFF");
-        // Show default card
-        cardLayout.show(contentPanel, "HOME");
     }
 
-    private JPanel createContentCard(String labelText) {
+    private JPanel createSimpleContentCard(String labelText) {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
         panel.setLayout(new GridBagLayout());
@@ -115,15 +159,13 @@ public class DashBoardForm {
         return panel;
     }
 
-    public JPanel getMainPanel() {
-        return mainPanel;
+    private void showContentPanel(String cardKey) {
+        cardLayout.show(contentPanel, cardKey);
     }
 
-    public JPanel getContentPanel() {
-        return contentPanel;
-    }
-
-    public JPanel getSidebarPanel() {
-        return sidebarPanel;
+    private void handleLogout() {
+        Session.getInstance().setAccount(null);
+        new LoginForm().setVisible(true);
+        this.dispose();
     }
 }
