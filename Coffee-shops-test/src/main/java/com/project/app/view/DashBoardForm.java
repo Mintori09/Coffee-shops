@@ -54,8 +54,9 @@ public class DashBoardForm extends JFrame {
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
         button.setPreferredSize(new Dimension(100, 40));
         button.setMaximumSize(new Dimension(150, 40));
-        button.setBackground(new Color(165, 42, 42));
-        button.setForeground(new Color(250, 245, 240));
+        button.setBackground(Color.decode("#C6B38E"));
+        button.setForeground(new Color(0,0,0));
+//        button.setForeground(new Color(250, 245, 240));
         button.setFont(new Font("Segoe UI", Font.BOLD, 14));
         button.setFocusPainted(false);
         button.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
@@ -127,9 +128,7 @@ public class DashBoardForm extends JFrame {
     private void createContentPanel() {
         cardLayout = new CardLayout();
         contentPanel = new JPanel(cardLayout);
-
         addContentCards();
-
         showContentPanel("HOME");
     }
 

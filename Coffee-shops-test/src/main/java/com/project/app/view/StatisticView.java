@@ -557,7 +557,6 @@ public class StatisticView extends JPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         StatisticView statisticView = new StatisticView();
 
-        // Example usage of updateStatistics with sample data
         Map<String, Number> sampleProfitData = new HashMap<>();
         sampleProfitData.put("Mon", 120);
         sampleProfitData.put("Tue", 180);
@@ -582,13 +581,11 @@ public class StatisticView extends JPanel {
         sampleOrderData.put("Sandwiches", 25);
         sampleOrderData.put("Drinks", 5);
 
-        // Example summary data
         String sampleTotalRevenue = "$2,500";
         String sampleTotalOrders = "200";
         String sampleTotalProfit = "$800";
 
         statisticView.updateStatistics(sampleProfitData, sampleRevenueData, sampleOrderData, sampleTotalRevenue, sampleTotalOrders, sampleTotalProfit);
-
 
         frame.getContentPane().add(statisticView);
         frame.pack();
