@@ -212,6 +212,7 @@ public class LoginForm extends JFrame implements ActionListener, FocusListener {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
                 setSize(700, 1000);
                 DashBoardForm dashboard = new DashBoardForm();
                 dashboard.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

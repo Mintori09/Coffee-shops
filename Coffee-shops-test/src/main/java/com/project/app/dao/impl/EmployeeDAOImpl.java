@@ -102,4 +102,35 @@ public class EmployeeDAOImpl implements EmployeeDAO {
         }
         return false;
     }
+
+    @Override
+    public List<Object[]> getAllStaffDetails() {
+        List<Object[]> list = new ArrayList<>();
+        String sql = "SELECT e.id, e.full_name, a.username, a.role, e.hire_date " +
+                     "FROM employees e JOIN accounts a ON e.account_id = a.id";
+        try (Connection conn = DatabaseConnection.getConnection();
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            while (rs.next()) {
+                Object[] row = new Object[5];
+                row[0] = rs.getInt("id");
+                row[1] = rs.getString("full_name");
+                row[2] = rs.getString("username");
+                row[3] = rs.getString("role");
+                row[4] = rs.getObject("hire_date", java.time.LocalDateTime.class);
+                list.add(row);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public static void main(String[] args) {
+        EmployeeDAOImpl dao = new EmployeeDAOImpl();
+        List<Object[]> list = dao.getAllStaffDetails();
+        for (Object[] row : list) {
+            System.out.println(row[0]);
+        }
+    }
 }

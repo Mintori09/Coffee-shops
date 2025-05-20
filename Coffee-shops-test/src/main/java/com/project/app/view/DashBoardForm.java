@@ -6,6 +6,7 @@ import com.project.app.session.Session;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 
 public class DashBoardForm extends JFrame {
     private JPanel mainPanel;
@@ -13,7 +14,7 @@ public class DashBoardForm extends JFrame {
     private JPanel contentPanel;
     private CardLayout cardLayout;
 
-    public DashBoardForm() {
+    public DashBoardForm() throws SQLException {
         super("Dashboard");
         mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(new Color(250, 240, 230));
@@ -125,14 +126,14 @@ public class DashBoardForm extends JFrame {
         sidebarPanel.add(Box.createVerticalStrut(20));
     }
 
-    private void createContentPanel() {
+    private void createContentPanel() throws SQLException {
         cardLayout = new CardLayout();
         contentPanel = new JPanel(cardLayout);
         addContentCards();
         showContentPanel("HOME");
     }
 
-    private void addContentCards() {
+    private void addContentCards() throws SQLException {
         JPanel homePanel = createSimpleContentCard("Welcome to Home Page");
         JPanel productsPanel = new ProductManagementView();
         JPanel ordersPanel = createSimpleContentCard("Order Management Panel");

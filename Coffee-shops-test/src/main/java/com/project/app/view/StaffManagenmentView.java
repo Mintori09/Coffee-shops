@@ -63,7 +63,7 @@ public class StaffManagenmentView extends JPanel {
         add(infoPanel, BorderLayout.NORTH);
 
         staffTable = new JTable(new DefaultTableModel(
-                new Object[]{"ID", "Name", "Username", "Password", "Hire date", "Role"}, 0
+                new Object[]{"Employee ID", "Full Name", "Username", "Role", "Hire Date"}, 0
         ));
         staffTable.getTableHeader().setFont(new Font("Sans Serif", Font.BOLD, 14));
         staffTable.getTableHeader().setBackground(new Color(160, 82, 45));
@@ -97,66 +97,57 @@ public class StaffManagenmentView extends JPanel {
     private void loadDataToTable() {
         DefaultTableModel model = (DefaultTableModel) staffTable.getModel();
         model.setRowCount(0);
+        // Assuming a DAO method exists to get combined Employee and Account data
+        // For demonstration, let's assume a method like getAllStaffDetails() exists
+        // and returns a list of objects with getEmployeeId(), getFullName(), getUsername(), getRole(), getHireDate()
         EmployeeDAO employeeDAO = null;
         try {
             employeeDAO = new EmployeeDAOImpl();
-            java.util.List<Employee> employees = employeeDAO.getAllEmployees();
-            for (Employee emp : employees) {
-                model.addRow(new Object[]{
-                        emp.getId(),
-                        emp.getFullName(),
-                        emp.getPhoneNumber(),
-                });
+            java.util.List<Object[]> staffDetails = employeeDAO.getAllStaffDetails();
+            for (Object[] row : staffDetails) {
+                model.addRow(row);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Không thể kết nối tới cơ sở dữ liệu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Không thể kết nối tới cơ sở dữ liệu hoặc lấy dữ liệu nhân viên!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void addStaff() {
-        DefaultTableModel model = (DefaultTableModel) staffTable.getModel();
-        String name = txtName.getText();
-        String username = txtUsername.getText();
-        String password = new String(txtPassword.getPassword());
-        String role = txtRole.getText();
-        if (name.isEmpty() || username.isEmpty() || password.isEmpty() || role.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        int id = model.getRowCount() + 1;
-        model.addRow(new Object[]{id, name, username, role});
+        // This method needs to be updated to handle adding both Employee and Account data
+        // This will likely involve calls to both EmployeeDAO and AccountDAO
+        JOptionPane.showMessageDialog(this, "Chức năng thêm nhân viên cần được triển khai để xử lý cả thông tin nhân viên và tài khoản.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
         clearFields();
     }
 
     private void updateStaff() {
+        // This method needs to be updated to handle updating both Employee and Account data
+        // This will likely involve calls to both EmployeeDAO and AccountDAO
         int selectedRow = staffTable.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn nhân viên để cập nhật!", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        DefaultTableModel model = (DefaultTableModel) staffTable.getModel();
-        model.setValueAt(txtName.getText(), selectedRow, 1);
-        model.setValueAt(txtUsername.getText(), selectedRow, 2);
-        model.setValueAt(txtRole.getText(), selectedRow, 3);
+        JOptionPane.showMessageDialog(this, "Chức năng cập nhật nhân viên cần được triển khai để xử lý cả thông tin nhân viên và tài khoản.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
         clearFields();
     }
 
     private void deleteStaff() {
+        // This method needs to be updated to handle deleting both Employee and Account data
+        // This will likely involve calls to both EmployeeDAO and AccountDAO
         int selectedRow = staffTable.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn nhân viên để xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        DefaultTableModel model = (DefaultTableModel) staffTable.getModel();
-        model.removeRow(selectedRow);
+        JOptionPane.showMessageDialog(this, "Chức năng xóa nhân viên cần được triển khai để xử lý cả thông tin nhân viên và tài khoản.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
         clearFields();
     }
 
     private void clearFields() {
         txtName.setText("");
         txtUsername.setText("");
-        txtPassword.setText("");
+        txtPassword.setText(""); // Password field is still cleared, but not used for display
         txtRole.setText("");
         staffTable.clearSelection();
     }
@@ -165,11 +156,11 @@ public class StaffManagenmentView extends JPanel {
         int selectedRow = staffTable.getSelectedRow();
         if (selectedRow != -1) {
             DefaultTableModel model = (DefaultTableModel) staffTable.getModel();
-            txtName.setText(model.getValueAt(selectedRow, 1).toString());
-            txtUsername.setText(model.getValueAt(selectedRow, 2).toString());
-            txtRole.setText(model.getValueAt(selectedRow, 3).toString());
+            txtName.setText(model.getValueAt(selectedRow, 1).toString()); // Full Name
+            txtUsername.setText(model.getValueAt(selectedRow, 2).toString()); // Username
+            txtRole.setText(model.getValueAt(selectedRow, 3).toString()); // Role
 
-            txtPassword.setText("");
+            txtPassword.setText(""); // Password is not displayed in the table
         }
     }
 
@@ -188,4 +179,3 @@ public class StaffManagenmentView extends JPanel {
         new StaffManagenmentView().setVisible(true);
     }
 }
-

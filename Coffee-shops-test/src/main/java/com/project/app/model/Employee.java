@@ -9,29 +9,34 @@ public class Employee {
     private LocalDate dateOfBirth;
     private String gender;
     private String phoneNumber;
+    private int accountId;
+
+    private LocalDateTime hireDate;
 
     public Employee() {
     }
 
-    public Employee(int id, String fullName, LocalDate dateOfBirth, String gender, String phoneNumber,  LocalDateTime hireDate) {
+    public Employee(int id, String fullName, LocalDate dateOfBirth, String gender, String phoneNumber, LocalDateTime hireDate, int accountId) {
         this.id = id;
         this.fullName = fullName;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.phoneNumber = phoneNumber;
+        this.accountId = accountId;
         this.hireDate = hireDate;
     }
-    
-    private Account account; // Add this field
+
+    private Account account;
 
     // Getter and setter for account
     public Account getAccount() {
         return account;
     }
+
     public void setAccount(Account account) {
         this.account = account;
     }
-    
+
     public LocalDateTime getHireDate() {
         return hireDate;
     }
@@ -80,7 +85,12 @@ public class Employee {
         this.id = i;
     }
 
-    private LocalDateTime hireDate;
 
-	
+    public int getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
+    }
 }

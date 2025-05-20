@@ -187,8 +187,8 @@ public class ProductView extends JPanel {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Coffee Shop Product Listing");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(1000, 700); // Set a reasonable size
-            frame.setLocationRelativeTo(null); // Center the frame
+            frame.setSize(1000, 700);
+            frame.setLocationRelativeTo(null);
 
             ProductView productView = new ProductView();
             frame.add(productView);
@@ -197,4 +197,3 @@ public class ProductView extends JPanel {
         });
     }
 }
-//</editor-fold>

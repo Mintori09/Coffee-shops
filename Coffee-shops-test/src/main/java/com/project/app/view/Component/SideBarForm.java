@@ -1,5 +1,7 @@
 package com.project.app.view.Component;
 
+import com.project.app.dao.impl.EmployeeDAOImpl;
+import com.project.app.model.Employee;
 import com.project.app.session.Session;
 
 import javax.swing.*;
@@ -11,7 +13,8 @@ public class SideBarForm extends JPanel {
         setBackground(new Color(210, 180, 140));
         String username = "Guest";
         if (Session.getInstance().getAccount() != null) {
-            username = Session.getInstance().getAccount().getUsername();
+            EmployeeDAOImpl dao = new EmployeeDAOImpl();
+            username = dao.findById(Session.getInstance().getAccount().getId()).getFullName();
         }
         JLabel usernameLabel = new JLabel("Coffee Shop");
         usernameLabel.setFont(new Font("Inter", Font.BOLD, 12));
@@ -30,7 +33,7 @@ public class SideBarForm extends JPanel {
         headerPanel.setBackground(new Color(210, 180, 140));
 
         headerPanel.add(usernameLabel);
-        headerPanel.add(Box.createHorizontalGlue()); // khoảng cách linh hoạt đẩy label bên phải
+        headerPanel.add(Box.createHorizontalGlue());
         headerPanel.add(userLabel);
 
         add(headerPanel, BorderLayout.NORTH);

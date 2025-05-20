@@ -11,19 +11,19 @@ public class DrinkCategory {
         this.drinkCategoryName = drinkCategoryName;
     }
 
-    public int getFoodCategoryId() {
+    public int getDrinkCategoryId() {
         return drinkCategoryId;
     }
 
-    public void setFoodCategoryId(int drinkCategoryId) {
+    public void setDrinkCategoryId(int drinkCategoryId) {
         this.drinkCategoryId = drinkCategoryId;
     }
 
-    public String getFoodCategoryName() {
+    public String getDrinkCategoryName() {
         return drinkCategoryName;
     }
 
-    public void setFoodCategoryName(String drinkCategoryName) {
+    public void setDrinkCategoryName(String drinkCategoryName) {
         this.drinkCategoryName = drinkCategoryName;
     }
 }

@@ -24,27 +24,27 @@ public class Drink {
         this.createdDate = createdDate;
     }
 
-    public int getFoodId() {
+    public int getDrinkId() {
         return drinkId;
     }
 
-    public void setFoodId(int drinkId) {
+    public void setDrinkId(int drinkId) {
         this.drinkId = drinkId;
     }
 
-    public String getFoodName() {
+    public String getDrinkName() {
         return drinkName;
     }
 
-    public void setFoodName(String drinkName) {
+    public void setDrinkName(String drinkName) {
         this.drinkName = drinkName;
     }
 
-    public String getFoodCategoryId() {
+    public String getDrinkCategoryId() {
         return drinkCategoryId;
     }
 
-    public void setFoodCategoryId(String drinkCategoryId) {
+    public void setDrinkCategoryId(String drinkCategoryId) {
         this.drinkCategoryId = drinkCategoryId;
     }
 

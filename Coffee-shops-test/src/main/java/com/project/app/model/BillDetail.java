@@ -30,11 +30,11 @@ public class BillDetail {
         this.billId = billId;
     }
 
-    public String getFoodId() {
+    public String getDrinkId() {
         return drinkId;
     }
 
-    public void setFoodId(String drinkId) {
+    public void setDrinkId(String drinkId) {
         this.drinkId = drinkId;
     }
 
