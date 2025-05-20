@@ -126,4 +126,12 @@ public class BillDAOImpl implements BillDAO {
             return false;
         }
     }
+
+    public void deleteAll() throws SQLException {
+        String sql = "DELETE FROM bills";
+        Connection conn = DatabaseConnection.getConnection();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.executeUpdate();
+        }
+    }
 }

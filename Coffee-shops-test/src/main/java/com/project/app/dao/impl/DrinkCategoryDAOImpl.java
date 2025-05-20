@@ -22,4 +22,12 @@ public class DrinkCategoryDAOImpl implements DrinkCategoryDAO {
     public DrinkCategory findById(int drinkCategoryId) {
         return null;
     }
+
+    public void deleteAll() throws java.sql.SQLException {
+        String sql = "DELETE FROM drink_categories";
+        java.sql.Connection conn = com.project.app.database.DatabaseConnection.getConnection();
+        try (java.sql.PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.executeUpdate();
+        }
+    }
 }

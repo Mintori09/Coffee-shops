@@ -82,6 +82,14 @@ public class BillDetailDAOImpl implements BillDetailDAO {
         }
     }
 
+    public void deleteAll() throws java.sql.SQLException {
+        String sql = "DELETE FROM bill_details";
+        java.sql.Connection conn = com.project.app.database.DatabaseConnection.getConnection();
+        try (java.sql.PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.executeUpdate();
+        }
+    }
+
     public static void main(String[] args) {
         BillDetailDAOImpl impl = new BillDetailDAOImpl();
         List<BillDetail> bill = impl.getBillDetailsByBillId(7);

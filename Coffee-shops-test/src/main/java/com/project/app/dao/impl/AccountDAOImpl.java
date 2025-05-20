@@ -40,4 +40,12 @@ public class AccountDAOImpl implements AccountDAO {
             return null;
         }
     }
+
+    public void deleteAll() throws SQLException {
+        String sql = "DELETE FROM accounts";
+        Connection conn = DatabaseConnection.getConnection();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.executeUpdate();
+        }
+    }
 }

@@ -148,6 +148,14 @@ public class EmployeeDAOImpl implements EmployeeDAO {
         return list;
     }
 
+    public void deleteAll() throws SQLException {
+        String sql = "DELETE FROM employees";
+        Connection conn = DatabaseConnection.getConnection();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.executeUpdate();
+        }
+    }
+
     public static void main(String[] args) {
         EmployeeDAOImpl dao = new EmployeeDAOImpl();
         List<Object[]> list = dao.getAllStaffDetails();

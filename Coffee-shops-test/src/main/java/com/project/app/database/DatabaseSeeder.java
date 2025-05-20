@@ -32,6 +32,23 @@ public class DatabaseSeeder {
     }
 
     public void seed() {
+        System.out.println("Clearing existing data...");
+        try {
+            billDetailDAO.deleteAll();
+            billDAO.deleteAll();
+            drinkDAO.deleteAll();
+            drinkCategoryDAO.deleteAll();
+            employeeDAO.deleteAll();
+            accountDAO.deleteAll();
+            System.out.println("Existing data cleared.");
+        } catch (java.sql.SQLException e) {
+            System.err.println("Error clearing existing data: " + e.getMessage());
+            e.printStackTrace();
+            // Optionally, you might want to exit or handle the error differently
+            // System.exit(1);
+        }
+
+
         seedAccounts();
         seedEmployees();
         seedDrinkCategories();
